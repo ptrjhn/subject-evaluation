@@ -1,0 +1,152 @@
+/* Theme style (colors & sizes) */
+@import "theme-default";
+
+/* Core Libs & Lib configs */
+@import "libs/all";
+
+/* Mixins */
+@import "mixins";
+
+/* Theme components */
+@import "nav-bar";
+@import "aside";
+@import "title-bar";
+@import "hero-bar";
+@import "card";
+@import "table";
+@import "tiles";
+@import "form";
+@import "main-section";
+@import "modal";
+@import "footer";
+@import "misc";
+
+/* Animate.css custom build (just selected animations to minimize bundle size) */
+// @import "../css/animate.min.css";
+
+html {
+  background: #e8f0fe;
+}
+
+.card {
+  border: 1px solid #f8f8f8;
+}
+
+
+.footer {
+  display: none;
+}
+
+.modal .animation-content .modal-card {
+  margin-left: .7rem;
+  margin-right: .7rem;
+}
+
+nav.navbar {
+  box-shadow: 0 2px 0 rgb(82 86 91 / 10%);
+}
+
+.table .control {
+  width: 80% !important;
+}
+
+.table td,
+.table th {
+  border: 1px solid #f3e8e8;
+  border-width: 0 0 1px;
+  padding: .7em 0.8em;
+}
+
+table tr:last-child {
+  border-bottom: 1px solid #f8f8f8;
+}
+
+.modal-background {
+  background-color: rgba(10, 10, 10, 0.7);
+}
+
+.b-table .table-wrapper+.level,
+.notification {
+  background: #fff;
+}
+
+
+
+.table .is-bordered tr:first-child th:first-child,
+.table .is-bordered tr:first-child th:first-child {
+  border: 1px solid #f3e8e8 !important;
+  border-width: 0 0 1px;
+}
+
+.table .is-bordered tbody tr:last-child td {
+  border: 1px solid #f3e8e8 !important;
+  border-width: 0 0 1px;
+}
+
+section.hero.is-hero-bar .hero-body {
+  padding: 1rem;
+}
+
+
+.is-large.modal-close,
+.is-large.delete {
+  visibility: hidden;
+}
+
+.table {
+  table-layout: fixed;
+}
+
+.wrap-text {
+  white-space: nowrap;
+  overflow: hidden;
+  width: 180px;
+  height: 30px;
+  text-overflow: ellipsis;
+}
+
+.table td {
+  vertical-align: middle !important;
+}
+
+.btn-rounded {
+  border-radius: 50%;
+  padding: 6px 8px;
+  font-size: small;
+  text-transform: none;
+  text-shadow: none !important;
+  background: #eaeaea;
+  border-color: transparent;
+  border: none;
+  padding: 1em 1em !important;
+}
+
+.btn-info:hover {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.mdi .mdi-trash-can {
+  font-size: 2rem;
+}
+
+.table .is-bordered tr:first-child {
+  border: 1px solid #f3e8e8 !important;
+}
+
+.modal-card-title {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.control.has-icons-right .input,
+.control.has-icons-right .taginput .taginput-container.is-focusable,
+.taginput .control.has-icons-right .taginput-container.is-focusable,
+.control.has-icons-right .select select {
+  padding-right: 2em;
+}
+
+.help {
+  font-size: 1rem;
+}

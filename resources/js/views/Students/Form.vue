@@ -360,9 +360,7 @@ export default {
       apiClient
         .get(`/curriculums?course_id=${id}`)
         .then(response => {
-          this.curriculums = response.data.map(cur => {
-            return cur;
-          });
+          this.curriculums = response.data;
         });
     },
 

@@ -501,7 +501,7 @@ export default {
         .catch(({ response }) => {
           this.$buefy.snackbar.open({
             message: response.data.message,
-            queue: false,
+            queue: true,
             position: "is-top",
           });
           this.isAdding = false;

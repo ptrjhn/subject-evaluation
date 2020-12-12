@@ -1,4 +1,6 @@
 import apiClient from '../apiClient'
+import { setQueryParams } from '../services/helper'
+
 
 export default {
   getStudents() {
@@ -7,6 +9,11 @@ export default {
   getStudent(id) {
     return apiClient.get(`/students/${id}`)
   },
+
+  getGrades(query) {
+    return apiClient.get(`/student/curriculum/grades?${setQueryParams(query)}`)
+  },
+
   postStudent(course) {
     return apiClient.post('/students', course)
   },

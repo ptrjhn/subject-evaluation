@@ -407,9 +407,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.form.course_id = id === null ? 0 : id;
       _apiClient__WEBPACK_IMPORTED_MODULE_3__["default"].get("/curriculums?course_id=".concat(id)).then(function (response) {
-        _this2.curriculums = response.data.map(function (cur) {
-          return cur;
-        });
+        _this2.curriculums = response.data;
       });
     },
     onInput: function onInput(event) {

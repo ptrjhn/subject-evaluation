@@ -573,7 +573,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         _this5.$buefy.snackbar.open({
           message: response.data.message,
-          queue: false,
+          queue: true,
           position: "is-top"
         });
 

@@ -206,6 +206,16 @@ const router = new Router({
     },
 
     {
+      path: "/student/:student_id/curriculum/grades",
+      name: "student-curriculum-grades",
+      component: () => import("./views/PrintCurriculumGrades.vue"),
+      meta: {
+        requiresAuth: true,
+        userType: undefined
+      }
+    },
+
+    {
       path: "*",
       name: "not-found",
       component: () => import("./views/PageNotFound.vue"),

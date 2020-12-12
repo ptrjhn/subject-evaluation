@@ -86905,7 +86905,17 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     path: "/transaction/evaluation/:sy/:semester/student/:student_id",
     name: "student-form-print",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! ./views/PrintSubjects.vue */ "./resources/js/views/PrintSubjects.vue"));
+      return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! ./views/PrintSubjects.vue */ "./resources/js/views/PrintSubjects.vue"));
+    },
+    meta: {
+      requiresAuth: true,
+      userType: undefined
+    }
+  }, {
+    path: "/student/:student_id/curriculum/grades",
+    name: "student-curriculum-grades",
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculumGrades.vue */ "./resources/js/views/PrintCurriculumGrades.vue"));
     },
     meta: {
       requiresAuth: true,
@@ -86915,7 +86925,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     path: "*",
     name: "not-found",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! ./views/PageNotFound.vue */ "./resources/js/views/PageNotFound.vue"));
+      return __webpack_require__.e(/*! import() */ 16).then(__webpack_require__.bind(null, /*! ./views/PageNotFound.vue */ "./resources/js/views/PageNotFound.vue"));
     },
     meta: {
       userType: undefined
@@ -87162,6 +87172,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _apiClient__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../apiClient */ "./resources/js/apiClient.js");
+/* harmony import */ var _services_helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/helper */ "./resources/js/services/helper.js");
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   getStudents: function getStudents() {
@@ -87169,6 +87181,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   getStudent: function getStudent(id) {
     return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].get("/students/".concat(id));
+  },
+  getGrades: function getGrades(query) {
+    return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].get("/student/curriculum/grades?".concat(Object(_services_helper__WEBPACK_IMPORTED_MODULE_1__["setQueryParams"])(query)));
   },
   postStudent: function postStudent(course) {
     return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].post('/students', course);
@@ -88910,7 +88925,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var state = {
   students: [],
   student: {},
-  errors: null
+  errors: null,
+  grades: []
 };
 var getters = {
   getByStudentId: function getByStudentId(state) {
@@ -88926,6 +88942,9 @@ var getters = {
   student: function student(state) {
     return state.student;
   },
+  grades: function grades(state) {
+    return state.grades;
+  },
   errors: function errors(state) {
     return state.errors;
   }
@@ -88939,6 +88958,9 @@ var mutations = {
   },
   SET_STUDENT: function SET_STUDENT(state, data) {
     state.student = data;
+  },
+  SET_GRADES: function SET_GRADES(state, data) {
+    state.grades = data;
   },
   DELETE_STUDENT: function DELETE_STUDENT(state, data) {
     var index = state.students.findIndex(function (student) {
@@ -89050,8 +89072,31 @@ var actions = {
       }, _callee3);
     }))();
   },
-  deleteStudent: function deleteStudent(_ref4, payload) {
-    var commit = _ref4.commit;
+  fetchGrades: function fetchGrades(_ref4, query) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+      var commit;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              commit = _ref4.commit;
+              _context4.next = 3;
+              return _services_StudentService_js__WEBPACK_IMPORTED_MODULE_1__["default"].getGrades(query).then(function (response) {
+                commit('SET_GRADES', response.data);
+              })["catch"](function (error) {
+                return error.response.data;
+              });
+
+            case 3:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  },
+  deleteStudent: function deleteStudent(_ref5, payload) {
+    var commit = _ref5.commit;
 
     try {
       _services_StudentService_js__WEBPACK_IMPORTED_MODULE_1__["default"].deleteStudent(payload.id);
@@ -89060,42 +89105,42 @@ var actions = {
       return error.response.data;
     }
   },
-  updateStudent: function updateStudent(_ref5, payload) {
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+  updateStudent: function updateStudent(_ref6, payload) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
       var commit, response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
-              commit = _ref5.commit;
+              commit = _ref6.commit;
               response = null;
-              _context4.prev = 2;
-              _context4.next = 5;
+              _context5.prev = 2;
+              _context5.next = 5;
               return _services_StudentService_js__WEBPACK_IMPORTED_MODULE_1__["default"].updateStudent(payload);
 
             case 5:
-              response = _context4.sent;
+              response = _context5.sent;
               commit('UPDATE_STUDENT', response.data.data);
-              _context4.next = 13;
+              _context5.next = 13;
               break;
 
             case 9:
-              _context4.prev = 9;
-              _context4.t0 = _context4["catch"](2);
+              _context5.prev = 9;
+              _context5.t0 = _context5["catch"](2);
 
-              if (!(_context4.t0.response && _context4.t0.response.status === 422)) {
-                _context4.next = 13;
+              if (!(_context5.t0.response && _context5.t0.response.status === 422)) {
+                _context5.next = 13;
                 break;
               }
 
-              return _context4.abrupt("return", _context4.t0.response.data);
+              return _context5.abrupt("return", _context5.t0.response.data);
 
             case 13:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
         }
-      }, _callee4, null, [[2, 9]]);
+      }, _callee5, null, [[2, 9]]);
     }))();
   }
 };

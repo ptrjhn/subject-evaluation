@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>CEAT Evaluation System</title>
+    <title>ISU PRAAS</title>
 
     {{-- Scripts --}}
     @stack('head-scripts')

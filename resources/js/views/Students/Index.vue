@@ -111,6 +111,13 @@
                       <b-icon icon="pencil" size="is-small" />
                     </router-link>
                   </b-tooltip>
+
+                  <b-tooltip label="Print Subjects" position="is-top">
+                    <button class="button is-primary is-small" @click="printCurriculumGrades(props.row)">
+                      <b-icon icon="printer" size="is-small" />
+                    </button>
+                  </b-tooltip>
+
                   <b-tooltip label="Click to Delete" position="is-top">
                     <button
                       class="button is-danger is-small"
@@ -264,6 +271,12 @@ export default {
       this.isNew = false;
       Object.assign(this.formData, data);
       this.isModalActive = true;
+    },
+
+    printCurriculumGrades(data) {
+      let routeData = this.$router.resolve({ name: "student-curriculum-grades", 
+      params: {student_id: data.id} });
+      window.open(routeData.href, "_blank");
     },
 
     deleteConfirmation(trashObject = null) {

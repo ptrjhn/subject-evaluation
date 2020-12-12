@@ -119,7 +119,7 @@ class StudentSubjectController extends Controller
 
         if ($isMaxUnits) {
             return response()->json([
-                'message' => 'Maximum of 24 units only',
+                'message' => 'Maximum of 28 units only',
                 'validation' => 'failed',
 
             ], 400);
@@ -176,10 +176,11 @@ class StudentSubjectController extends Controller
             ->where('student_id', '=', $request->student_id)
             ->where("semester", '=', $request->semester)
             ->where('school_year', '=', $request->school_year)
+            ->where('course_id', '=', $request->course_id)
             ->where('deleted_at', '=', NULL)
             ->get();
 
-        return $data[0]->total_units + (int) $request->units > 24 ? true : false;
+        return $data[0]->total_units + (int) $request->units > 28 ? true : false;
     }
 
     /**

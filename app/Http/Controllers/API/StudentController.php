@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Student;
+use App\Rules\Propercase;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Rules\Propercase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -227,5 +228,24 @@ class StudentController extends Controller
             'failed' => false,
             'message' => 'Successfully Deleted'
         ]);
+    }
+
+    public function curriculumGrades(Request $request)
+    {
+        $query = DB::table('vw_students_grades')
+            ->whereRaw(
+                'curriculum_id = ? AND (student_id IS NULL OR student_id = ? OR id_number = ?)',
+                [$request->query('curriculum_id'), $request->query('student_id'), $request->query('student_id')]
+            );
+
+        if ($request->query('year_level')) {
+            $query = $query->where('year_level', $request->query('year_level'));
+        }
+
+        if ($request->query('semester')) {
+            $query = $query->where('semester', $request->query('semester'));
+        }
+
+        return response()->json($query->get());
     }
 }

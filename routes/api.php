@@ -62,4 +62,5 @@ Route::group(['middleware' => ['autotrim', 'auth:api']], function () {
     Route::get('settings/semesters/current', 'SettingController@getCurrentSem')->name('current-sem');
     Route::get('settings/academic-gradings', 'SettingController@getAcademicGradings');
     Route::get('courses/{course}/curriculums', 'API\CourseController@getCurriculumsByCourse');
+    Route::get('student/curriculum/grades', 'API\StudentController@curriculumGrades');
 });

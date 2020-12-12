@@ -277,6 +277,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -318,6 +325,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.isNew = false;
       Object.assign(this.formData, data);
       this.isModalActive = true;
+    },
+    printCurriculumGrades: function printCurriculumGrades(data) {
+      var routeData = this.$router.resolve({
+        name: "student-curriculum-grades",
+        params: {
+          student_id: data.id
+        }
+      });
+      window.open(routeData.href, "_blank");
     },
     deleteConfirmation: function deleteConfirmation() {
       var _this2 = this;
@@ -730,6 +746,41 @@ var render = function() {
                                         )
                                       ],
                                       1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-tooltip",
+                                      {
+                                        attrs: {
+                                          label: "Print Subjects",
+                                          position: "is-top"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "button is-primary is-small",
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.printCurriculumGrades(
+                                                  props.row
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("b-icon", {
+                                              attrs: {
+                                                icon: "printer",
+                                                size: "is-small"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        )
+                                      ]
                                     ),
                                     _vm._v(" "),
                                     _c(

@@ -4,6 +4,7 @@ const state = {
   students: [],
   student: {},
   errors: null,
+  grades: [],
 }
 
 const getters = {
@@ -12,6 +13,7 @@ const getters = {
   },
   students: state => state.students,
   student: state => state.student,
+  grades: state => state.grades,
   errors: state => state.errors
 }
 
@@ -25,6 +27,9 @@ const mutations = {
   SET_STUDENT(state,
     data) {
     state.student = data;
+  },
+  SET_GRADES(state, data) {
+    state.grades = data;
   },
   DELETE_STUDENT(state, data) {
     let index = state.students.findIndex(student => student.id === data.id);
@@ -73,6 +78,17 @@ const actions = {
   }, id) {
     await StudentService.getStudent(id).then(response => {
         commit('SET_STUDENT', response.data.data);
+      })
+      .catch(error => {
+        return error.response.data;
+      })
+  },
+
+  async fetchGrades({
+    commit
+  }, query) {
+    await StudentService.getGrades(query).then(response => {
+        commit('SET_GRADES', response.data);
       })
       .catch(error => {
         return error.response.data;

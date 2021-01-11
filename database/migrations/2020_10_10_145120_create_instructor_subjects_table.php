@@ -17,11 +17,13 @@ class CreateInstructorSubjectsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('instructor_id');
             $table->unsignedBigInteger('sy_id');
+            $table->unsignedBigInteger('subject_id');
             $table->unsignedBigInteger('semester_id');
             $table->string('subject_code', 30);
             $table->string('subject_description');
             $table->string('units');
             $table->foreign('semester_id')->references('id')->on('semesters');
+            $table->foreign('subject_id')->references('id')->on('subjects');
             $table->foreign('sy_id')->references('id')->on('academic_years');
             $table->foreign('instructor_id')->references('id')->on('instructors')->cascadeOnDelete()->cascadeOnUpdate();
             $table->softDeletes();

@@ -213,7 +213,7 @@ export default {
     HeroBar,
     TitleBar,
     ModalBox,
-    CardComponent
+    CardComponent,
   },
   data() {
     return {
@@ -229,12 +229,12 @@ export default {
         description: "",
         unit: "",
         lab: "",
-        lec: ""
-      }
+        lec: "",
+      },
     };
   },
   computed: {
-    ...mapGetters("subjects", ["subjects", "subject", "errors"])
+    ...mapGetters("subjects", ["subjects", "subject", "errors"]),
   },
 
   created() {
@@ -250,7 +250,7 @@ export default {
       "fetchSubject",
       "createSubject",
       "updateSubject",
-      "deleteSubject"
+      "deleteSubject",
     ]),
 
     edit(data) {
@@ -272,7 +272,7 @@ export default {
           hasIcon: true,
           onConfirm: () => {
             this.remove(this.trashObject);
-          }
+          },
         });
       }
     },
@@ -286,7 +286,7 @@ export default {
         hasIcon: true,
         closable: true,
         qeue: false,
-        autoClose: true
+        autoClose: true,
       });
     },
 
@@ -335,9 +335,9 @@ export default {
         description: "",
         unit: "",
         lab: "",
-        lec: ""
+        lec: "",
       };
-    }
-  }
+    },
+  },
 };
 </script>

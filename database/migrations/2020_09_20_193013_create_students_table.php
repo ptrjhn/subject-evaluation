@@ -23,7 +23,7 @@ class CreateStudentsTable extends Migration
             $table->string('birth_date');
             $table->string('civil_status');
             $table->text('address');
-            $table->text('birth_place')->nullable();;
+            $table->text('birth_place')->nullable();
             $table->string('nationality')->nullable();
             $table->string('religion')->nullable();
             $table->string('contact_no')->nullable();

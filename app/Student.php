@@ -14,12 +14,17 @@ class Student extends Model
 
     protected $fillable = [
         'student_id', 'first_name', 'last_name', 'middle_name', 'contact_no', 'sex', 'birth_date', 'nationality', 'religion',
-        'civil_status', 'birth_place', 'address', 'course_id', 'curriculum_year'
+        'civil_status', 'birth_place', 'address', 'course_id', 'curriculum_year', 'curriculum_id', 'user_id'
     ];
 
     public function course()
     {
         return $this->belongsTo('App\Course');
+    }
+
+    public function account()
+    {
+        return $this->belongsTo('App\User', 'id', 'student_id');
     }
 
     public function curriculum()

@@ -14,7 +14,6 @@
         title="Instructors"
       >
         <card-toolbar>
-      
           <b-select v-model="perPage" slot="left">
             <option value="5">5 per page</option>
             <option value="10">10 per page</option>
@@ -22,7 +21,7 @@
             <option value="20">20 per page</option>
           </b-select>
 
-           <download-excel
+          <download-excel
             class="button is-success"
             :data="instructors"
             :fields="json_fields"
@@ -82,13 +81,12 @@
         </b-modal>
 
         <b-table
-          :checked-rows.sync="checkedRows"
           :loading="isLoading"
           :paginated="true"
           :per-page="perPage"
-          :checkable="true"
           :hoverable="true"
-          default-sort="last_name"
+          :narrowed="true"
+          :bordered="true"
           :data="instructors"
         >
           <template slot-scope="props">
@@ -116,19 +114,36 @@
               >{{ props.row.last_name }}</b-table-column
             >
 
-            <b-table-column custom-key="actions" class="is-actions-cell">
+            <b-table-column
+              custom-key="actions"
+              class="is-actions-cell"
+              width="20%"
+            >
               <div class="buttons is-right">
-                <b-tooltip label="Click to edit" position="is-left">
+                <b-tooltip label="Print Subjects" position="is-top">
                   <button
-                    class="button is-link btn-rounded"
-                    @click="edit(props.row)"
+                    class="button is-primary"
+                    @click="navigateToSubjects(props.row)"
                   >
+                    <b-icon icon="printer" size="is-small" />
+                  </button>
+                </b-tooltip>
+                <b-tooltip label="Subjects" position="is-top">
+                  <button
+                    class="button is-link"
+                    @click="navigateToSubjects(props.row)"
+                  >
+                    <b-icon icon="view-headline" size="is-small" />
+                  </button>
+                </b-tooltip>
+                <b-tooltip label="Edit" position="is-top">
+                  <button class="button is-link" @click="edit(props.row)">
                     <b-icon icon="pencil" size="is-small" />
                   </button>
                 </b-tooltip>
-                <b-tooltip label="Click to Delete" position="is-left">
+                <b-tooltip label="Delete" position="is-top">
                   <button
-                    class="button is-danger btn-rounded"
+                    class="button is-danger"
                     type="button"
                     @click.prevent="deleteConfirmation(props.row)"
                   >
@@ -176,7 +191,7 @@ export default {
     HeroBar,
     TitleBar,
     ModalBox,
-    CardComponent
+    CardComponent,
   },
   data() {
     return {
@@ -191,17 +206,17 @@ export default {
         first_name: "",
         middle_name: "",
         last_name: "",
-        is_active: true
+        is_active: true,
       },
       json_fields: {
         "First Name": "first_name",
         "Middle Name": "middle_name",
         "Last Name": "last_name",
-      }
+      },
     };
   },
   computed: {
-    ...mapGetters("instructors", ["instructors", "instructor"])
+    ...mapGetters("instructors", ["instructors", "instructor"]),
   },
 
   created() {
@@ -214,13 +229,17 @@ export default {
       "s",
       "createInstructor",
       "updateInstructor",
-      "deleteInstructor"
+      "deleteInstructor",
     ]),
 
     edit(data) {
       this.isModalActive = true;
       this.isNew = false;
       Object.assign(this.formData, data);
+    },
+
+    navigateToSubjects(params) {
+      this.$router.push({ path: `/instructors/${params.id}/subjects` });
     },
 
     deleteConfirmation(trashObject = null) {
@@ -235,7 +254,7 @@ export default {
           hasIcon: true,
           onConfirm: () => {
             this.remove(this.trashObject);
-          }
+          },
         });
       }
     },
@@ -281,9 +300,9 @@ export default {
         first_name: "",
         middle_name: "",
         last_name: "",
-        is_active: true
+        is_active: true,
       };
-    }
-  }
+    },
+  },
 };
 </script>

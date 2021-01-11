@@ -58,10 +58,11 @@ class UserController extends Controller
 
         $user = User::create([
             'name' => $request['name'],
-            'source_id' => 0,
+            'student_id' => $request['student_id'],
+            'instructor_id' => $request['instructor_id'],
             'user_type' => $request['user_type'],
             'email' => $request['email'],
-            'password' => bcrypt('secret'),
+            'password' => $request['user_type'] !== 'Super Admin' ? bcrypt('secret') : bcrypt($request['password']),
         ]);
 
         return response()->json($user);

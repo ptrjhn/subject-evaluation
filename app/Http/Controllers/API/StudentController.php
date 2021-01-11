@@ -27,7 +27,7 @@ class StudentController extends Controller
     public function index(Request $request)
     {
 
-        $students = Student::with(['course', 'curriculum'])->latest()->get();
+        $students = Student::with(['course', 'curriculum', 'account'])->latest()->get();
 
         if ($request->query('active') == 'false') {
             $students =
@@ -69,6 +69,10 @@ class StudentController extends Controller
                 'contact_no' => 'required|min:11|max:15|starts_with:09',
                 'guardian_contact' => 'nullable|min:11|max:15|starts_with:09',
                 'curriculum_id' => 'required|exists:curriculums,id',
+                'email' => [
+                    'required', 'email', 'unique:users'
+                ],
+                'password' => ['required'],
                 'sex' => [
                     'required',
                     Rule::in(['Male', 'Female'])
@@ -112,6 +116,8 @@ class StudentController extends Controller
                 'religion' => $request->religion,
                 'course_id' => $request->course_id,
                 'curriculum_id' => $request->curriculum_id,
+                'username' => $request->username,
+                'password' => $request->password,
             ]);
 
             return response()->json([
@@ -127,7 +133,7 @@ class StudentController extends Controller
 
     public function show($id)
     {
-        $selected = Student::with('course')->findOrFail($id);
+        $selected = Student::with('course', 'account', 'curriculum')->findOrFail($id);
 
         return response()->json([
             'data' => $selected
@@ -163,6 +169,10 @@ class StudentController extends Controller
             'contact_no' => 'required|min:11|max:15|starts_with:09',
             'guardian_contact' => 'nullable|min:11|max:15|starts_with:09',
             'curriculum_id' => 'required|exists:curriculums,id',
+            'email' => [
+                'required', 'email', 'unique:users,email,' . $request->user_id
+            ],
+            'password' => ['required'],
             'sex' => [
                 'required',
                 Rule::in(['Male', 'Female'])

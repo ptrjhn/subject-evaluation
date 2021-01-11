@@ -12,23 +12,12 @@
           <form>
             <div class="columns">
               <div class="column is-one-half">
-                <b-field label="Search Student" horizontal>
-                  <b-autocomplete
-                    placeholder="e.g Cruz, Juan Dela"
-                    :open-on-focus="true"
-                    v-model="searchStudent"
-                    :data="filteredStudents"
-                    field="full_name"
-                    @select="(option) => setSelectedStudent(option)"
-                    :clearable="true"
-                  >
-                    <template slot-scope="props">
-                      <div>
-                        {{ props.option.student_id }} |
-                        {{ props.option.full_name }}
-                      </div>
-                    </template>
-                  </b-autocomplete>
+                <b-field label="Student Name" horizontal>
+                  <b-input
+                    class="bg-color"
+                    readonly
+                    :value="student.full_name"
+                  />
                 </b-field>
               </div>
               <div class="column is-one-half">
@@ -45,42 +34,19 @@
             <div class="columns">
               <div class="column is-one-half">
                 <b-field label="Course" horizontal>
-                  <b-input readonly :value="student.course.description" />
+                  <b-input readonly :value="course.description" />
                 </b-field>
               </div>
               <div class="column is-one-half">
                 <b-field label="Curriculum" horizontal>
-                  <b-input readonly :value="student.curriculum_year" />
+                  <b-input readonly :value="curriculum.curriculum_year" />
                 </b-field>
               </div>
             </div>
           </form>
         </div>
       </card-component>
-      <card-component title="Student Grades">
-        <card-toolbar>
-          <button
-            v-if="studentSubjects.length > 0"
-            slot="right"
-            type="button"
-            :class="isEdit ? 'button is-success' : 'button is-link'"
-            @click="saveGrades"
-          >
-            <b-icon
-              v-if="!isEdit"
-              icon="pencil"
-              custom-size="default"
-              class="i"
-            />
-            <b-icon
-              v-if="isEdit"
-              icon="content-save-edit"
-              custom-size="default"
-              class="i"
-            />
-            <span>{{ isEdit ? "Submit Grades" : "Edit Grades" }}</span>
-          </button>
-        </card-toolbar>
+      <card-component title="Subjects">
         <div class="container-fluid">
           <div class="columns">
             <b-table :data="studentSubjects">
@@ -145,27 +111,9 @@
                   field="grade"
                   sortable
                 >
-                  <div v-if="!isEdit">
+                  <div>
                     {{ props.row.grade }}
                   </div>
-                  <b-select
-                    name="grade"
-                    v-model="props.row.grade"
-                    v-on:blur="props.row.edit = ''"
-                    @keyup.enter="props.row.edit = ''"
-                    v-if="isEdit"
-                    placeholder="Enter Grade"
-                    style="width: 150px !important"
-                    :expanded="true"
-                  >
-                    <option
-                      v-for="(grading, index) in gradings"
-                      :value="grading"
-                      :key="index"
-                    >
-                      {{ grading }}
-                    </option>
-                  </b-select>
                 </b-table-column>
               </template>
 
@@ -200,7 +148,7 @@ import apiClient from "../apiClient";
 import HeroBar from "@/components/HeroBar";
 import Axios from "axios";
 export default {
-  name: "Registration",
+  name: "Grades",
   components: {
     HeroBar,
     CardComponent,
@@ -219,126 +167,55 @@ export default {
       isLoading: false,
       isEdit: false,
       currentTab: 0,
-      searchStudent: "",
       isComponentLoading: true,
-      student: {
-        student_id: "",
-        course_id: "",
-        curriculum_year: "",
-        course: {},
-      },
-
-      isEdit: false,
-      gradings: [
-        "1.00",
-        "1.25",
-        "1.50",
-        "1.75",
-        "2.00",
-        "2.25",
-        "2.50",
-        "2.75",
-        "3.00",
-        "INC",
-        "5.00",
-        "DRP",
-        "N/A",
-      ],
     };
   },
 
   computed: {
+    ...mapGetters("auth", ["user"]),
     titleStack() {
-      return ["Transactions", "Subjects", "Grade Entry"];
+      return ["Subjects"];
     },
 
     sy() {
-      return this.$store.state.currentSY.description;
+      return this.$store.state.currentSY;
+    },
+    semester() {
+      return this.$store.state.currentSem;
+    },
+    course() {
+      return this.student.course;
+    },
+
+    curriculum() {
+      return this.student.curriculum;
     },
 
     ...mapGetters("courseSubject", ["coursesSubjects"]),
     ...mapGetters("studentSubject", ["remainingSubjects", "studentSubjects"]),
-    ...mapGetters("students", ["students"]),
-
-    filteredStudents() {
-      return this.students.filter((opt) => {
-        return (
-          opt.full_name
-            .toString()
-            .toLowerCase()
-            .indexOf(this.searchStudent.toLowerCase()) >= 0
-        );
-      });
-    },
+    ...mapGetters("students", ["student"]),
   },
 
   async created() {
     this.isComponentLoading = true;
-    await this.fetchStudents();
-    this.showEnrolledSubjects();
+    await this.showStudent();
     setTimeout(() => {
       this.isComponentLoading = false;
     }, 500);
   },
   methods: {
-    ...mapActions("studentSubject", [
-      "getStudentSubjects",
-      "updateStudentSubject",
-    ]),
-
-    ...mapActions("students", ["fetchStudents"]),
-
-    saveGrades() {
-      if (this.isEdit) {
-        this.updateStudentSubject(this.studentSubjects).then(() => {
-          this.showNotification(
-            "Successfully updated",
-            "success",
-            "is-top-right"
-          );
-        });
-      }
-      this.isEdit = !this.isEdit;
+    ...mapActions("studentSubject", ["getStudentSubjects"]),
+    ...mapActions("students", ["fetchStudent"]),
+    async showStudent() {
+      await this.fetchStudent(this.user.student_id);
+      await this.showEnrolledSubjects();
     },
-
     async showEnrolledSubjects() {
       await this.getStudentSubjects({
-        id: this.student.id,
+        id: this.user.student_id,
         curriculum: this.student.curriculum_year,
-        sy: this.sy,
-      });
-    },
-
-    setSelectedStudent(data) {
-      this.isLoading = true;
-      if (data !== null) {
-        this.student = data;
-        this.student.curriculum_year = data.curriculum.curriculum_year;
-      } else {
-        this.reset();
-        this.clearText();
-      }
-      this.showEnrolledSubjects();
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 500);
-    },
-
-    clearText() {
-      this.student = {
-        student_id: "",
-        course_id: "",
-        curriculum_year: "",
-        course: {},
-      };
-    },
-
-    reset() {
-      this.form = mapValues(this.form, (item) => {
-        if (item && typeof item === "object") {
-          return [];
-        }
-        return null;
+        sy: this.sy.description,
+        semester: this.semester.semester,
       });
     },
   },

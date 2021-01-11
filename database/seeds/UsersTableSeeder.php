@@ -14,17 +14,15 @@ class UsersTableSeeder extends Seeder
         \App\User::create([
             'name' => 'Mary Grace Verbo',
             'username' => 'mgverbo',
-            'source_id' => 0,
             'email' => 'marygrace@example.com',
-            'user_type' => 'Administrator',
+            'user_type' => 'Super Admin',
             'password' => bcrypt('secret')
         ]);
 
         \App\User::create([
             'name' => 'Juan Dela Cruz',
             'username' => 'jcruz',
-            'source_id' => 1,
-            'user_type' => 'Standard User',
+            'user_type' => 'Admin',
             'email' => 'juandcruz@example.com',
             'password' => bcrypt('secret')
         ]);

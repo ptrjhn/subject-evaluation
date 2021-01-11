@@ -1,4 +1,5 @@
 import StudentService from '../services/StudentService.js'
+import UserService from '../services/UserService.js'
 
 const state = {
   students: [],
@@ -53,7 +54,15 @@ const actions = {
     let response = null;
     try {
       response = await StudentService.postStudent(payload);
+      await UserService.postUser({
+        user_type: "Student",
+        student_id: response.data.data.id,
+        name: `${response.data.data.first_name} ${response.data.data.last_name}`,
+        email: payload.email,
+        password: payload.password,
+      })
       commit('ADD_STUDENT', response.data.data);
+
     } catch (error) {
       if (error.response && error.response.status === 422) {
         return error.response.data;
@@ -113,6 +122,14 @@ const actions = {
     let response = null;
     try {
       response = await StudentService.updateStudent(payload);
+      await UserService.updateUser({
+
+        user_type: "Student",
+        student_id: response.data.data.id,
+        name: `${response.data.data.first_name} ${response.data.data.last_name}`,
+        email: payload.email,
+        password: payload.password,
+      })
       commit('UPDATE_STUDENT', response.data.data);
     } catch (error) {
       if (error.response && error.response.status === 422) {

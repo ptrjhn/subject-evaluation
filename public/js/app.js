@@ -2076,16 +2076,58 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       menu: []
     };
   },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_4__["mapGetters"])('auth', ['user'])), {}, {
-    modules: function modules() {
-      return ["General", [{
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_4__["mapGetters"])("auth", ["user"])), {}, {
+    access: function access() {
+      if (this.user.user_type === "Student") return this.studentAccess();
+      if (this.user.user_type === "Super Admin") return this.superAdminAccess(); // if (this.user.user_type === "Instructor") this.instructorAccess();
+    }
+  }),
+  created: function created() {
+    document.getElementById("root").className = "has-spinner-active has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded";
+    this.currentAY();
+    this.currentSem();
+  },
+  methods: {
+    userAccess: function userAccess() {
+      if (this.user.user_type !== "Super Admin") {
+        this.menu = this.modules.filter(function (m) {
+          return m.adminAccess == false;
+        });
+      } else {}
+    },
+    studentAccess: function studentAccess() {
+      return [[{
         to: {
           name: "home"
         },
         icon: "desktop-mac",
         label: "Dashboard",
         adminAccess: false
-      }], "Master Files", [{
+      }], [{
+        to: {
+          name: "student.subjects"
+        },
+        label: "Subjects",
+        icon: "book-search",
+        adminAccess: false
+      }, {
+        to: {
+          name: "student.curriculum"
+        },
+        label: "Curriculum",
+        icon: "book",
+        adminAccess: false
+      }]];
+    },
+    superAdminAccess: function superAdminAccess() {
+      return [[{
+        to: {
+          name: "home"
+        },
+        icon: "desktop-mac",
+        label: "Dashboard",
+        adminAccess: false
+      }], [{
         to: {
           name: "students-list"
         },
@@ -2150,80 +2192,130 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         label: "Settings",
         adminAccess: true,
         icon: "cogs"
-      }], "Transactions", [// {
-      //   to: { name: "subject.offering" },
-      //   label: "Subject Offering",
-      //   icon: "cogs",
-      //   adminAccess: false,
-      // },
-      // {
-      //   to: { name: "section.class" },
-      //   label: "Section Class",
-      //   icon: "cogs",
-      //   adminAccess: false,
-      // },
-      {
+      }], [{
+        to: {
+          name: "class.managements"
+        },
+        label: "Class Management",
+        icon: "book-search",
+        adminAccess: true
+      }, {
         to: {
           name: "subject.evaluation"
         },
         label: "Subject Evaluation",
         icon: "book-search",
         adminAccess: false
-      }, // {
-      //   to: "/students/subjects",
-      //   label: "Students Subjects",
-      //   icon: "folder-account-outline"
-      // },
-      // {
-      //   to: "/transactions/credited-subjects",
-      //   label: "Credit Subject",
-      //   icon: "folder-plus"
-      // },
-      {
+      }, {
         to: {
           name: "grade.entry"
         },
         label: "Grade Entry",
         icon: "table-large-plus",
         adminAccess: false
-      } // {
-      //   label: "Submenus",
-      //   subLabel: "Submenus Example",
-      //   icon: "view-list",
-      //   menu: [
-      //     {
-      //       href: "#void",
-      //       icon: "view-list",
-      //       label: "Sub-item One"
-      //     },
-      //     {
-      //       href: "#void",
-      //       label: "Sub-item Two",
-      //       icon: "view-list"
-      //     }
-      //   ]
-      // }
-      ]];
-    }
-  }),
-  created: function created() {
-    document.getElementById("root").className = "has-spinner-active has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded";
-    this.currentAY();
-    this.currentSem();
-  },
-  methods: {
-    userAccess: function userAccess() {
-      if (this.user.user_type !== 'Administrator') {
-        this.menu = this.modules.filter(function (m) {
-          return m.adminAccess == false;
-        });
-      } else {}
+      }]];
     },
-    currentAY: function currentAY() {
+    adminAccess: function adminAccess() {
+      [[{
+        to: {
+          name: "home"
+        },
+        icon: "desktop-mac",
+        label: "Dashboard",
+        adminAccess: false
+      }], [{
+        to: {
+          name: "students-list"
+        },
+        label: "Students",
+        icon: "account-multiple",
+        updateMark: true,
+        adminAccess: false
+      }, {
+        to: {
+          name: "academic-years-list"
+        },
+        label: "Academic Year",
+        icon: "calendar-month",
+        updateMark: true,
+        adminAccess: true
+      }, {
+        to: {
+          name: "subjects-list"
+        },
+        label: "Subjects",
+        icon: "bookshelf",
+        adminAccess: false
+      }, {
+        to: {
+          name: "instructors-list"
+        },
+        label: "Instructors",
+        icon: "account-tie",
+        adminAccess: true
+      }, {
+        to: {
+          name: "users-list"
+        },
+        label: "Users",
+        icon: "account-details",
+        adminAccess: true
+      }, {
+        to: {
+          name: "courses-list"
+        },
+        label: "Courses",
+        icon: "book-multiple",
+        adminAccess: true
+      }, {
+        to: {
+          name: "courses-curriculums"
+        },
+        label: "Curriculums",
+        icon: "notebook",
+        adminAccess: false
+      }, {
+        to: {
+          name: "sections-list"
+        },
+        label: "Sections",
+        icon: "cogs",
+        adminAccess: true
+      }, {
+        to: {
+          name: "semesters"
+        },
+        label: "Settings",
+        adminAccess: true,
+        icon: "cogs"
+      }], [{
+        to: {
+          name: "class.managements"
+        },
+        label: "Class Management",
+        icon: "book-search",
+        adminAccess: true
+      }, {
+        to: {
+          name: "subject.evaluation"
+        },
+        label: "Subject Evaluation",
+        icon: "book-search",
+        adminAccess: false
+      }, {
+        to: {
+          name: "grade.entry"
+        },
+        label: "Grade Entry",
+        icon: "table-large-plus",
+        adminAccess: false
+      }]];
+    },
+    currentSem: function currentSem() {
       var _this = this;
 
-      _apiClient__WEBPACK_IMPORTED_MODULE_3__["default"].get("/sy/current").then(function (response) {
-        _this.$store.commit("currentSY", response.data.data[0]);
+      _apiClient__WEBPACK_IMPORTED_MODULE_3__["default"].get("/settings/semesters/current").then(function (response) {
+        _this.$store.commit("currentSem", response.data.data[0]);
       })["catch"](function (error) {
         _this.$buefy.toast.open({
           message: "Error: ".concat(err.message),
@@ -2231,11 +2323,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
     },
-    currentSem: function currentSem() {
+    currentAY: function currentAY() {
       var _this2 = this;
 
-      _apiClient__WEBPACK_IMPORTED_MODULE_3__["default"].get("/settings/semesters/current").then(function (response) {
-        _this2.$store.commit("currentSem", response.data.data[0]);
+      _apiClient__WEBPACK_IMPORTED_MODULE_3__["default"].get("/sy/current").then(function (response) {
+        _this2.$store.commit("currentSY", response.data.data[0]);
       })["catch"](function (error) {
         _this2.$buefy.toast.open({
           message: "Error: ".concat(err.message),
@@ -66932,7 +67024,7 @@ var render = function() {
     [
       _c("nav-bar"),
       _vm._v(" "),
-      _c("aside-menu", { attrs: { menu: _vm.modules } }),
+      _c("aside-menu", { attrs: { menu: _vm.access } }),
       _vm._v(" "),
       _c("router-view"),
       _vm._v(" "),
@@ -86723,7 +86815,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     component: _Main_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
     meta: {
       requiresAuth: true,
-      userType: undefined
+      userType: "Super Aadmin"
     },
     children: [{
       path: "/home",
@@ -86732,128 +86824,129 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
         return Promise.resolve(/*! import() */).then(__webpack_require__.bind(null, /*! ./views/Home.vue */ "./resources/js/views/Home.vue"));
       },
       meta: {
-        userType: undefined
+        userType: "Super Aadmin"
       }
     }, {
       path: "/users",
       name: "users-list",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! ./views/Users.vue */ "./resources/js/views/Users.vue"));
+        return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! ./views/Users.vue */ "./resources/js/views/Users.vue"));
       },
       meta: {
-        userType: "Administrator"
+        userType: "Super Admin"
       }
     }, {
       path: "/students/new",
       name: "students-new",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 1).then(__webpack_require__.bind(null, /*! ./views/Students/Form.vue */ "./resources/js/views/Students/Form.vue"));
+        return __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! ./views/Students/Form.vue */ "./resources/js/views/Students/Form.vue"));
       },
       meta: {
-        userType: undefined
+        userType: "Student"
       }
     }, {
       path: "/students/:id/edit",
       name: "students-edit",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 1).then(__webpack_require__.bind(null, /*! ./views/Students/Form.vue */ "./resources/js/views/Students/Form.vue"));
+        return __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! ./views/Students/Form.vue */ "./resources/js/views/Students/Form.vue"));
       },
       meta: {
-        userType: undefined
+        userType: "Super Admin"
       }
     }, {
       path: "/subjects",
       name: "subjects-list",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 10).then(__webpack_require__.bind(null, /*! ./views/Subjects.vue */ "./resources/js/views/Subjects.vue"));
+        return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! ./views/Subjects.vue */ "./resources/js/views/Subjects.vue"));
       },
       meta: {
-        userType: undefined
+        userType: "Super Admin"
       },
       children: [{
         path: "/subjects/new",
         name: "subjects-new",
         meta: {
-          userType: undefined
+          userType: "Super Admin"
         }
       }, {
         path: "/subjects/edit",
         name: "subjects.edit",
         meta: {
-          userType: undefined
+          userType: "Super Admin"
         }
       }]
     }, {
       path: "/academic-years",
       name: "academic-years-list",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! ./views/AcademicYear.vue */ "./resources/js/views/AcademicYear.vue"));
+        return __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! ./views/AcademicYear.vue */ "./resources/js/views/AcademicYear.vue"));
       },
       meta: {
-        userType: "Administrator"
+        userType: "Super Admin"
       }
     }, {
       path: "/semesters",
       name: "semesters",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! ./views/Semester.vue */ "./resources/js/views/Semester.vue"));
+        return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! ./views/Semester.vue */ "./resources/js/views/Semester.vue"));
       },
       meta: {
-        userType: "Administrator"
+        userType: "Super Admin"
       }
     }, {
       path: "/students",
       name: "students-list",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 9).then(__webpack_require__.bind(null, /*! ./views/Students/Index.vue */ "./resources/js/views/Students/Index.vue"));
+        return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! ./views/Students/Index.vue */ "./resources/js/views/Students/Index.vue"));
       },
       meta: {
-        userType: undefined
+        userType: "Super Admin"
       }
     }, {
       path: "/instructors",
       name: "instructors-list",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 7).then(__webpack_require__.bind(null, /*! ./views/Instructors.vue */ "./resources/js/views/Instructors.vue"));
+        return __webpack_require__.e(/*! import() */ 8).then(__webpack_require__.bind(null, /*! ./views/Instructors.vue */ "./resources/js/views/Instructors.vue"));
       },
       meta: {
-        userType: "Administrator"
+        userType: "Super Admin"
       }
     }, {
       path: "/courses/curriculums",
       name: "courses-curriculums",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 6).then(__webpack_require__.bind(null, /*! ./views/Curriculums.vue */ "./resources/js/views/Curriculums.vue"));
+        return __webpack_require__.e(/*! import() */ 7).then(__webpack_require__.bind(null, /*! ./views/Curriculums.vue */ "./resources/js/views/Curriculums.vue"));
       },
       meta: {
-        userType: undefined
+        userType: "Super Admin"
       }
     }, {
       path: "/courses/curriculums/:curriculum_id/subjects",
       name: "curriculum-subjects-list",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./views/CoursesSubjects/Index.vue */ "./resources/js/views/CoursesSubjects/Index.vue"));
+        return __webpack_require__.e(/*! import() */ 1).then(__webpack_require__.bind(null, /*! ./views/CoursesSubjects/Index.vue */ "./resources/js/views/CoursesSubjects/Index.vue"));
       },
       meta: {
-        userType: undefined
+        userType: "Super Admin"
       }
     }, {
       path: "/sections",
       name: "sections-list",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 8).then(__webpack_require__.bind(null, /*! ./views/Sections.vue */ "./resources/js/views/Sections.vue"));
+        return __webpack_require__.e(/*! import() */ 10).then(__webpack_require__.bind(null, /*! ./views/Sections.vue */ "./resources/js/views/Sections.vue"));
       },
       meta: {
-        userType: "Administrator"
+        userType: "Super Admin"
       }
     }, {
       path: "/courses/:id/subjects",
       name: "course-subjects",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./views/CoursesSubjects/Index.vue */ "./resources/js/views/CoursesSubjects/Index.vue"));
+        return __webpack_require__.e(/*! import() */ 1).then(__webpack_require__.bind(null, /*! ./views/CoursesSubjects/Index.vue */ "./resources/js/views/CoursesSubjects/Index.vue"));
       },
       meta: {
-        userType: undefined
+        requiresAuth: true,
+        userType: "Super Admin"
       }
     }, {
       path: "/transactions/student/subjects/evaluation",
@@ -86862,50 +86955,101 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
         return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! ./views/SubjectEvaluation.vue */ "./resources/js/views/SubjectEvaluation.vue"));
       },
       meta: {
-        userType: undefined
+        requiresAuth: true,
+        userType: "Super Admin"
       }
     }, {
       path: "/transactions/grade/entry",
       name: "grade.entry",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! ./views/GradeEntry.vue */ "./resources/js/views/GradeEntry.vue"));
+        return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./views/GradeEntry.vue */ "./resources/js/views/GradeEntry.vue"));
       },
       meta: {
-        userType: undefined
+        requiresAuth: true,
+        userType: "Super Admin"
+      }
+    }, {
+      path: "/student/subjects",
+      name: "student.subjects",
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 19).then(__webpack_require__.bind(null, /*! ./views/Grades.vue */ "./resources/js/views/Grades.vue"));
+      },
+      meta: {
+        requiresAuth: true,
+        userType: "Student"
+      }
+    }, {
+      path: "/student/curriculum",
+      name: "student.curriculum",
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! ./views/StudentCurriculum.vue */ "./resources/js/views/StudentCurriculum.vue"));
+      },
+      meta: {
+        requiresAuth: true,
+        userType: "Student"
+      }
+    }, {
+      path: "/instructors/:id/subjects",
+      name: "instructors.subjects",
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 9).then(__webpack_require__.bind(null, /*! ./views/InstructorsSubjects.vue */ "./resources/js/views/InstructorsSubjects.vue"));
+      },
+      meta: {
+        requiresAuth: true,
+        userType: "Super Admin"
+      }
+    }, {
+      path: "/transactions/class-management",
+      name: "class.managements",
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./views/GradeEntry.vue */ "./resources/js/views/GradeEntry.vue"));
+      },
+      meta: {
+        requiresAuth: true,
+        userType: "Super Admin"
       }
     }, {
       path: "/courses",
       name: "courses-list",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! ./views/Courses.vue */ "./resources/js/views/Courses.vue"));
+        return __webpack_require__.e(/*! import() */ 6).then(__webpack_require__.bind(null, /*! ./views/Courses.vue */ "./resources/js/views/Courses.vue"));
       },
       meta: {
-        userType: "Administrator"
+        requiresAuth: true,
+        userType: "Super Admin"
       }
     }]
   }, {
     path: "/login",
-    name: "login",
+    name: "admin.login",
     component: _views_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
     meta: {
       requiresAuth: false,
-      userType: undefined
+      userType: "Super Admin"
+    }
+  }, {
+    path: "/portal/login",
+    name: "user.",
+    component: _views_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    meta: {
+      requiresAuth: false,
+      userType: "Super Admin"
     }
   }, {
     path: "/courses/curriculums/:curriculum_id/subjects/print",
     name: "curriculum-subjects-print",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculum.vue */ "./resources/js/views/PrintCurriculum.vue"));
+      return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculum.vue */ "./resources/js/views/PrintCurriculum.vue"));
     },
     meta: {
       requiresAuth: true,
-      userType: undefined
+      userType: "Super Admin"
     }
   }, {
     path: "/transaction/evaluation/:sy/:semester/student/:student_id",
     name: "student-form-print",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! ./views/PrintSubjects.vue */ "./resources/js/views/PrintSubjects.vue"));
+      return __webpack_require__.e(/*! import() */ 17).then(__webpack_require__.bind(null, /*! ./views/PrintSubjects.vue */ "./resources/js/views/PrintSubjects.vue"));
     },
     meta: {
       requiresAuth: true,
@@ -86915,17 +87059,16 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     path: "/student/:student_id/curriculum/grades",
     name: "student-curriculum-grades",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculumGrades.vue */ "./resources/js/views/PrintCurriculumGrades.vue"));
+      return __webpack_require__.e(/*! import() */ 16).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculumGrades.vue */ "./resources/js/views/PrintCurriculumGrades.vue"));
     },
     meta: {
-      requiresAuth: true,
-      userType: undefined
+      userType: "Super Admin"
     }
   }, {
     path: "*",
     name: "not-found",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 16).then(__webpack_require__.bind(null, /*! ./views/PageNotFound.vue */ "./resources/js/views/PageNotFound.vue"));
+      return __webpack_require__.e(/*! import() */ 18).then(__webpack_require__.bind(null, /*! ./views/PageNotFound.vue */ "./resources/js/views/PageNotFound.vue"));
     },
     meta: {
       userType: undefined
@@ -86955,13 +87098,16 @@ router.beforeEach(function (to, from, next) {
     next("/home");
   }
 
-  if (to.matched.some(function (record) {
-    return record.meta.userType === "Administrator" && user.user_type !== "Administrator";
-  })) {
-    next("/home");
-  } else {
-    next();
-  }
+  next(); // if (
+  //   to.matched.some(
+  //     record =>
+  //     record.meta.userType !== undefined && record.meta.userType !== user.user_type
+  //   )
+  // ) {
+  //   next("/home");
+  // } else {
+  //   next();
+  // }
 });
 /* harmony default export */ __webpack_exports__["default"] = (router);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
@@ -87108,6 +87254,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _apiClient__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../apiClient */ "./resources/js/apiClient.js");
+/* harmony import */ var _helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helper */ "./resources/js/services/helper.js");
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   getInstructors: function getInstructors() {
@@ -87122,8 +87270,23 @@ __webpack_require__.r(__webpack_exports__);
   deleteInstructor: function deleteInstructor(id) {
     return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/instructors/".concat(id));
   },
-  updateInstructor: function updateInstructor(instructor) {
-    return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].put("/instructors/".concat(instructor.id), instructor);
+  updateInstructor: function updateInstructor(data) {
+    return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].put("/instructors/".concat(data.id), data);
+  },
+  getInstructorSubjects: function getInstructorSubjects(query) {
+    return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].get("/instructor/subjects?" + Object(_helper__WEBPACK_IMPORTED_MODULE_1__["setQueryParams"])(query));
+  },
+  getInstructorSubject: function getInstructorSubject(id) {
+    return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].get("/instructor/subjects/".concat(id));
+  },
+  postInstructorSubject: function postInstructorSubject(data) {
+    return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].post('/instructor/subjects', data);
+  },
+  deleteInstructorSubject: function deleteInstructorSubject(id) {
+    return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/instructor/subjects/".concat(id));
+  },
+  updateInstructorSubject: function updateInstructorSubject(data) {
+    return _apiClient__WEBPACK_IMPORTED_MODULE_0__["default"].put("/instructor/subjects/".concat(data.id), data);
   }
 });
 
@@ -88295,7 +88458,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var state = {
   instructors: [],
   instructor: {},
-  errors: null
+  instructorSubject: {},
+  errors: null,
+  instructorSubjects: []
 };
 var getters = {
   getInstructorById: function getInstructorById(state) {
@@ -88311,6 +88476,12 @@ var getters = {
   instructor: function instructor(state) {
     return state.instructor;
   },
+  instructorSubjects: function instructorSubjects(state) {
+    return state.instructorSubjects;
+  },
+  instructorSubject: function instructorSubject(state) {
+    return state.instructorSubject;
+  },
   errors: function errors(state) {
     return state.errors;
   }
@@ -88325,7 +88496,7 @@ var mutations = {
   SET_INSTRUCTOR: function SET_INSTRUCTOR(state, data) {
     state.instructor = data;
   },
-  DELETE_INSTRUCTOR: function DELETE_INSTRUCTOR(state, data) {
+  REMOVE_INSTRUCTOR: function REMOVE_INSTRUCTOR(state, data) {
     var index = state.instructors.findIndex(function (instructor) {
       return instructor.id === data.id;
     });
@@ -88337,6 +88508,28 @@ var mutations = {
     });
     var instructor = state.instructors[index];
     Object.assign(instructor, data);
+  },
+  ADD_INSTRUCTOR_SUBJECT: function ADD_INSTRUCTOR_SUBJECT(state, data) {
+    state.instructorSubjects.unshift(data);
+  },
+  SET_INSTRUCTOR_SUBJECTS: function SET_INSTRUCTOR_SUBJECTS(state, data) {
+    state.instructorSubjects = data;
+  },
+  SET_INSTRUCTOR_SUBJECT: function SET_INSTRUCTOR_SUBJECT(state, data) {
+    state.instructorSubject = data;
+  },
+  REMOVE_INSTRUCTOR_SUBJECT: function REMOVE_INSTRUCTOR_SUBJECT(state, data) {
+    var index = state.instructorSubjects.findIndex(function (instructor) {
+      return instructor.id === data.id;
+    });
+    state.instructorSubjects.splice(index, 1);
+  },
+  UPDATE_INSTRUCTOR_SUBJECT: function UPDATE_INSTRUCTOR_SUBJECT(state, data) {
+    var index = state.instructorSubjects.findIndex(function (el) {
+      return el.id === data.id;
+    });
+    var subject = state.instructorSubjects[index];
+    Object.assign(subject, data);
   },
   SET_ERRORS: function SET_ERRORS(state, errors) {
     state.errors = errors;
@@ -88381,32 +88574,20 @@ var actions = {
   },
   fetchInstructor: function fetchInstructor(_ref3, id) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-      var commit, instructor;
+      var commit;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               commit = _ref3.commit;
-              instructor = getters.getInstructorById(id);
-
-              if (!instructor) {
-                _context2.next = 6;
-                break;
-              }
-
-              commit('SET_INSTRUCTOR', instructor);
-              _context2.next = 8;
-              break;
-
-            case 6:
-              _context2.next = 8;
+              _context2.next = 3;
               return _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].getInstructor(id).then(function (response) {
                 commit('SET_INSTRUCTOR', response.data);
               })["catch"](function (error) {
                 return error.response.data;
               });
 
-            case 8:
+            case 3:
             case "end":
               return _context2.stop();
           }
@@ -88419,7 +88600,7 @@ var actions = {
 
     try {
       _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].deleteInstructor(payload.id);
-      commit('DELETE_INSTRUCTOR', payload);
+      commit('REMOVE_INSTRUCTOR', payload);
     } catch (error) {
       return error.response.data;
     }
@@ -88452,6 +88633,92 @@ var actions = {
           }
         }
       }, _callee3, null, [[1, 7]]);
+    }))();
+  },
+  fetchInstructorSubjects: function fetchInstructorSubjects(_ref6, query) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+      var commit, dispatch;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              commit = _ref6.commit, dispatch = _ref6.dispatch;
+              _context4.next = 3;
+              return _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].getInstructorSubjects(query).then(function (response) {
+                commit('SET_INSTRUCTOR_SUBJECTS', response.data[0]);
+              })["catch"](function (error) {
+                return error.response.data;
+              });
+
+            case 3:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  },
+  fetchInstructorSubject: function fetchInstructorSubject(_ref7, id) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+      var commit, dispatch;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              commit = _ref7.commit, dispatch = _ref7.dispatch;
+              _context5.next = 3;
+              return _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].getInstructorSubject(id).then(function (response) {
+                commit('SET_INSTRUCTOR_SUBJECT', response.data);
+              })["catch"](function (error) {
+                return error.response.data;
+              });
+
+            case 3:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
+    }))();
+  },
+  deleteInstructorSubject: function deleteInstructorSubject(_ref8, payload) {
+    var commit = _ref8.commit;
+
+    try {
+      _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].deleteInstructorSubject(payload.id);
+      commit('REMOVE_INSTRUCTOR_SUBJECT', payload);
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+  updateInstructorSubject: function updateInstructorSubject(_ref9, payload) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+      var commit;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              commit = _ref9.commit;
+              _context6.prev = 1;
+              _context6.next = 4;
+              return _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].updateInstructorSubject(payload);
+
+            case 4:
+              commit('UPDATE_INSTRUCTOR_SUBJECT', payload);
+              _context6.next = 10;
+              break;
+
+            case 7:
+              _context6.prev = 7;
+              _context6.t0 = _context6["catch"](1);
+              return _context6.abrupt("return", _context6.t0.response.data);
+
+            case 10:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, null, [[1, 7]]);
     }))();
   }
 };
@@ -88915,11 +89182,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _services_StudentService_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/StudentService.js */ "./resources/js/services/StudentService.js");
+/* harmony import */ var _services_UserService_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/UserService.js */ "./resources/js/services/UserService.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
 var state = {
@@ -88995,27 +89264,37 @@ var actions = {
 
             case 5:
               response = _context.sent;
+              _context.next = 8;
+              return _services_UserService_js__WEBPACK_IMPORTED_MODULE_2__["default"].postUser({
+                user_type: "Student",
+                student_id: response.data.data.id,
+                name: "".concat(response.data.data.first_name, " ").concat(response.data.data.last_name),
+                email: payload.email,
+                password: payload.password
+              });
+
+            case 8:
               commit('ADD_STUDENT', response.data.data);
-              _context.next = 13;
+              _context.next = 15;
               break;
 
-            case 9:
-              _context.prev = 9;
+            case 11:
+              _context.prev = 11;
               _context.t0 = _context["catch"](2);
 
               if (!(_context.t0.response && _context.t0.response.status === 422)) {
-                _context.next = 13;
+                _context.next = 15;
                 break;
               }
 
               return _context.abrupt("return", _context.t0.response.data);
 
-            case 13:
+            case 15:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[2, 9]]);
+      }, _callee, null, [[2, 11]]);
     }))();
   },
   fetchStudents: function fetchStudents(_ref2) {
@@ -89120,27 +89399,37 @@ var actions = {
 
             case 5:
               response = _context5.sent;
+              _context5.next = 8;
+              return _services_UserService_js__WEBPACK_IMPORTED_MODULE_2__["default"].updateUser({
+                user_type: "Student",
+                student_id: response.data.data.id,
+                name: "".concat(response.data.data.first_name, " ").concat(response.data.data.last_name),
+                email: payload.email,
+                password: payload.password
+              });
+
+            case 8:
               commit('UPDATE_STUDENT', response.data.data);
-              _context5.next = 13;
+              _context5.next = 15;
               break;
 
-            case 9:
-              _context5.prev = 9;
+            case 11:
+              _context5.prev = 11;
               _context5.t0 = _context5["catch"](2);
 
               if (!(_context5.t0.response && _context5.t0.response.status === 422)) {
-                _context5.next = 13;
+                _context5.next = 15;
                 break;
               }
 
               return _context5.abrupt("return", _context5.t0.response.data);
 
-            case 13:
+            case 15:
             case "end":
               return _context5.stop();
           }
         }
-      }, _callee5, null, [[2, 9]]);
+      }, _callee5, null, [[2, 11]]);
     }))();
   }
 };

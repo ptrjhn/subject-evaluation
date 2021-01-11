@@ -167,7 +167,7 @@
                   :data="getFilteredCourses"
                   field="description"
                   :open-on-focus="true"
-                  @select="option => getCurriculumsByCourse(option.id)"
+                  @select="(option) => getCurriculumsByCourse(option.id)"
                   :clearable="true"
                 >
                   <template slot-scope="props">
@@ -243,7 +243,6 @@
               </b-field>
             </b-field>
             <b-field label="Nationality/Religion" horizontal>
-
               <b-field>
                 <b-input
                   icon="translate"
@@ -256,6 +255,32 @@
                   icon="christianity"
                   v-model="form.religion"
                   placeholder="Enter Religion (Optional)"
+                />
+              </b-field>
+            </b-field>
+            <hr />
+
+            <b-field label="Email/Password" horizontal>
+              <b-field
+                :type="errors.email == null ? '' : 'is-danger'"
+                :message="errors.email == null ? '' : errors.email"
+              >
+                <b-input
+                  icon="account"
+                  v-model="form.email"
+                  placeholder="Email Address"
+                />
+              </b-field>
+              <b-field
+                :type="errors.password == null ? '' : 'is-danger'"
+                :message="errors.password == null ? '' : errors.password"
+              >
+                <b-input
+                  type="password"
+                  :value="form.password"
+                  icon="contact-phone"
+                  v-model="form.password"
+                  placeholder="password"
                 />
               </b-field>
             </b-field>
@@ -294,7 +319,7 @@ export default {
   components: {
     HeroBar,
     CardComponent,
-    TitleBar
+    TitleBar,
   },
   data() {
     return {
@@ -304,6 +329,7 @@ export default {
       paramId: this.$route.params.id,
       isLoading: false,
       bday: new Date(),
+
       form: {
         id: "",
         student_id: "",
@@ -322,10 +348,13 @@ export default {
         civil_status: "",
         course_id: "",
         birth_date: "",
-        sex: ""
+        user_id: "",
+        sex: "",
+        email: "",
+        password: "",
       },
 
-      civilStatus: ["Single", "Married", "Widow"]
+      civilStatus: ["Single", "Married", "Widow"],
     };
   },
   computed: {
@@ -334,14 +363,17 @@ export default {
         ? ["Master Files", "Students", "New"]
         : ["Master Files", "Students", "Edit"];
     },
-    ...mapGetters("students", ["student"])
+    ...mapGetters("students", ["student"]),
   },
   async created() {
     this.fetchCourses();
     if (this.$route.params.id !== undefined) {
       this.isNew = false;
       await this.fetchStudent(this.$route.params.id);
+      this.form.email = this.student.account.email;
       Object.assign(this.form, this.student);
+      this.form.password = this.student.account.password;
+
       this.getCurriculumsByCourse(this.student.course_id);
       this.options.course.searchText = this.student.course.description;
     }
@@ -352,16 +384,16 @@ export default {
     ...mapActions("students", [
       "updateStudent",
       "createStudent",
-      "fetchStudent"
+      "fetchStudent",
     ]),
+
+    ...mapActions("users", ["createUser", "updateUser", "fetchUser"]),
 
     getCurriculumsByCourse(id) {
       this.form.course_id = id === null ? 0 : id;
-      apiClient
-        .get(`/curriculums?course_id=${id}`)
-        .then(response => {
-          this.curriculums = response.data;
-        });
+      apiClient.get(`/curriculums?course_id=${id}`).then((response) => {
+        this.curriculums = response.data;
+      });
     },
 
     onInput(event) {
@@ -382,6 +414,8 @@ export default {
         response = await this.createStudent(this.form);
 
         if (response == undefined || response == null) {
+          // await this.account();
+
           this.showNotification("Successfully Saved.", "success");
         } else {
           this.errors = response.errors;
@@ -391,24 +425,50 @@ export default {
       }
     },
 
-    async update() {
+    async update(data) {
       let response = null;
       response = await this.updateStudent(this.form);
       if (response == undefined || response == null) {
+        // await this.account(data);
         this.showNotification("Successfully updated", "success");
       } else {
         this.errors = response.errors;
       }
     },
 
+    async account() {
+      this.form.user_id === null
+        ? await this.saveAccount()
+        : await this.updateAccount();
+    },
+
+    async saveAccount(data) {
+      await this.createUser({
+        user_type: "Student",
+        student_id: data,
+        name: `${this.form.first_name} ${this.form.last_name}`,
+        email: this.form.email,
+        password: this.form.password,
+      });
+    },
+
+    async updateAccount() {
+      await this.updateUser({
+        user_type: "Student",
+        student_id: this.form.id,
+        name: `${this.form.first_name} ${this.form.last_name}`,
+        email: this.form.email,
+        password: this.form.password,
+      });
+    },
     reset() {
-      this.form = mapValues(this.form, item => {
+      this.form = mapValues(this.form, (item) => {
         if (item && typeof item === "object") {
           return [];
         }
         return null;
       });
-    }
-  }
+    },
+  },
 };
 </script>

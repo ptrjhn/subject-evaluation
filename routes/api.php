@@ -46,6 +46,7 @@ Route::group(['middleware' => ['autotrim', 'auth:api']], function () {
         'courses-subjects' => 'API\CourseSubjectController',
         'academic-years' => 'API\AcademicYearController',
         'curriculums' => 'API\CurriculumController',
+        'instructor/subjects' => 'API\InstructorSubjectController',
     ]);
     Route::get('records/count', 'HomeController@dashboard');
     Route::get('courses/{course}/subjects', 'API\CourseSubjectController@subjectsByCourse');
@@ -62,5 +63,6 @@ Route::group(['middleware' => ['autotrim', 'auth:api']], function () {
     Route::get('settings/semesters/current', 'SettingController@getCurrentSem')->name('current-sem');
     Route::get('settings/academic-gradings', 'SettingController@getAcademicGradings');
     Route::get('courses/{course}/curriculums', 'API\CourseController@getCurriculumsByCourse');
+    Route::get('student/curriculum/grades', 'API\StudentController@curriculumGrades');
     Route::get('student/curriculum/grades', 'API\StudentController@curriculumGrades');
 });

@@ -3,7 +3,7 @@
     <div class="container mb-6">
       <div class="has-text-centered has-text-weight-bold">
         <img :src="'/images/isu_logo.png'" height="100px" width="100px" />
-        <p class="is-uppercase mt-5">Isabela State University</p>
+        <p class="is-uppercase mt-2">Isabela State University</p>
         <p class="is-capitalize">Ilagan Campus</p>
         <p class="is-uppercase">
           {{ studentCourse.description }}
@@ -13,51 +13,51 @@
       </div>
 
       <div class="container page-content">
-      <div class="row mt-5 is-capitalized page-content">
-        <div class="columns">
-          <div class="column p-2">
-            <span class="has-text-weight-bold">Name: </span>
-            {{ student.full_name }}
+        <div class="row mt-5 is-capitalized page-content">
+          <div class="columns">
+            <div class="column p-2 is-two-thirds">
+              <span class="has-text-weight-bold">Name: </span>
+              {{ student.full_name }}
+            </div>
+            <div class="column p-2">
+              <span class="has-text-weight-bold">CP Number: </span>
+              {{ student.contact_no }}
+            </div>
           </div>
-          <div class="column p-2">
-            <span class="has-text-weight-bold">CP Number: </span>
-            {{ student.contact_no }}
+          <div class="columns">
+            <div class="column is-two-thirds">
+              <span class="has-text-weight-bold">Address: </span>
+              {{ student.address }}
+            </div>
+            <div class="column">
+              <span class="has-text-weight-bold">Nationality: </span>
+              {{ student.nationality | isNone }}
+            </div>
           </div>
-        </div>
-        <div class="columns">
-          <div class="column is-half">
-            <span class="has-text-weight-bold">Address: </span>
-            {{ student.address }}
+          <div class="columns">
+            <div class="column is-two-thirds">
+              <span class="has-text-weight-bold">Date of Birth: </span>
+              {{ formatDate(student.birth_date) }}
+            </div>
+            <div class="column">
+              <span class="has-text-weight-bold">Gender: </span>
+              {{ student.sex | isEmpty }}
+            </div>
           </div>
-          <div class="column">
-            <span class="has-text-weight-bold">Nationality: </span>
-            {{ student.nationality | isNone }}
-          </div>
-        </div>
-         <div class="columns">
-          <div class="column is-half">
-            <span class="has-text-weight-bold">Date of Birth: </span>
-            {{ student.birth_date }}
-          </div>
-          <div class="column">
-            <span class="has-text-weight-bold">Gender: </span>
-            {{ student.sex | isEmpty }}
-          </div>
-        </div>
-        <div class="columns">
-          <div class="column is-half">
-            <span class="has-text-weight-bold">Civil Status: </span>
-            {{ student.civil_status }}
-          </div>
-          <div class="column">
-            <span class="has-text-weight-bold">Dialect: </span>
-            {{ student.dialect | isEmpty }}
+          <div class="columns">
+            <div class="column is-two-thirds">
+              <span class="has-text-weight-bold">Civil Status: </span>
+              {{ student.civil_status }}
+            </div>
+            <div class="column">
+              <span class="has-text-weight-bold">Dialect: </span>
+              {{ student.dialect | isEmpty }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-      <div class="mt-6">
+      <div class="mt-2">
         <div v-for="(yearSem, yearIndex) in yearLevel" :key="yearIndex">
           <table
             class="table is-bordered is-narrowed"
@@ -71,7 +71,7 @@
               </tr>
               <tr>
                 <th>Course No.</th>
-                <th>Descriptive Title</th>
+                <th style="min-width: 732px !important">Descriptive Title</th>
                 <th>Units</th>
                 <th>Prerequisite</th>
                 <th>Grades</th>
@@ -83,12 +83,12 @@
                 :key="index"
               >
                 <td width="10%">{{ subject.subject_code }}</td>
-                <td style="min-width: 432px;">
+                <td style="min-width: 432px">
                   {{ subject.subject_description }}
                 </td>
                 <td width="5%">{{ subject.units }}</td>
-                <td width="15%">{{ subject.prerequisite | isNone }}</td>
-                <td width="15%">{{ subject.grade }}</td>
+                <td width="22%">{{ subject.prerequisite | isNone }}</td>
+                <td width="8%">{{ subject.grade }}</td>
               </tr>
             </tbody>
           </table>
@@ -122,8 +122,8 @@ export default {
         { year: "Fourth Year", sem: "Summer" },
         { year: "Fifth Year", sem: "1st Semester" },
         { year: "Fifth Year", sem: "2nd Semester" },
-        { year: "Fifth Year", sem: "Summer" }
-      ]
+        { year: "Fifth Year", sem: "Summer" },
+      ],
     };
   },
   async created() {
@@ -133,7 +133,7 @@ export default {
 
     await this.fetchGrades({
       student_id: this.student.student_id,
-      curriculum_id: this.student.curriculum_id
+      curriculum_id: this.student.curriculum_id,
     });
 
     this.studentCourse = this.curriculum?.course;
@@ -146,7 +146,7 @@ export default {
   },
   computed: {
     ...mapGetters("students", ["student", "grades"]),
-    ...mapGetters("curriculums", ["curriculum"])
+    ...mapGetters("curriculums", ["curriculum"]),
   },
   methods: {
     ...mapActions("students", ["fetchGrades", "fetchStudent"]),
@@ -158,64 +158,67 @@ export default {
 
     groupGradesByYear() {
       const firstYearFirstSem = this.grades.filter(
-        grade => grade.year_level === "First Year" && grade.semester === "First"
+        (grade) =>
+          grade.year_level === "First Year" && grade.semester === "First"
       );
       const firstYearSecondSem = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "First Year" && grade.semester === "Second"
       );
       const firstYearSummer = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "First Year" && grade.semester === "Summer"
       );
 
       const secondYearFirstSem = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Second Year" && grade.semester === "First"
       );
       const secondYearSecondSem = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Second Year" && grade.semester === "Second"
       );
       const secondYearSummer = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Second Year" && grade.semester === "Summer"
       );
 
       const thirdYearFirstSem = this.grades.filter(
-        grade => grade.year_level === "Third Year" && grade.semester === "First"
+        (grade) =>
+          grade.year_level === "Third Year" && grade.semester === "First"
       );
       const thirdYearSecondSem = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Third Year" && grade.semester === "Second"
       );
       const thirdYearSummer = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Third Year" && grade.semester === "Summer"
       );
 
       const fourthYearFirstSem = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Fourth Year" && grade.semester === "First"
       );
       const fourthYearSecondSem = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Fourth Year" && grade.semester === "Second"
       );
       const fourthYearSummer = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Fourth Year" && grade.semester === "Summer"
       );
 
       const fifthYearFirstSem = this.grades.filter(
-        grade => grade.year_level === "Fifth Year" && grade.semester === "First"
+        (grade) =>
+          grade.year_level === "Fifth Year" && grade.semester === "First"
       );
       const fifthYearSecondSem = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Fifth Year" && grade.semester === "Second"
       );
       const fifthYearSummer = this.grades.filter(
-        grade =>
+        (grade) =>
           grade.year_level === "Fifth Year" && grade.semester === "Summer"
       );
 
@@ -238,13 +241,13 @@ export default {
       this.studentGrades.push(fifthYearFirstSem);
       this.studentGrades.push(fifthYearSecondSem);
       this.studentGrades.push(fifthYearSummer);
-    }
+    },
   },
   filters: {
     isBlank(value) {
       return value === "" || value === null ? "" : value;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -272,21 +275,10 @@ export default {
 }
 
 .columns:not(:last-child) {
-    margin-bottom: calc(.2rem - 0.25rem);
+  margin-bottom: calc(0.2rem - 0.25rem);
 }
 
 @media print {
-  table {
-    page-break-after: auto;
-  }
-  tr {
-    page-break-inside: avoid;
-    page-break-after: auto;
-  }
-  td {
-    page-break-inside: avoid;
-    page-break-after: auto;
-  }
   thead {
     display: table-header-group;
   }
@@ -296,8 +288,11 @@ export default {
   @page {
     scale: 100;
     size: "legal";
-    margin: 2mm 5mm 11mm 5mm;
+    margin: 10mm 5mm 10mm 5mm;
   }
 
+  @page :first {
+    margin-top: 5mm !important;
+  }
 }
 </style>

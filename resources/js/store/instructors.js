@@ -3,7 +3,9 @@ import InstructorService from '../services/InstructorService.js'
 const state = {
   instructors: [],
   instructor: {},
+  instructorSubject: {},
   errors: null,
+  instructorSubjects: [],
 }
 
 const getters = {
@@ -12,6 +14,8 @@ const getters = {
   },
   instructors: state => state.instructors,
   instructor: state => state.instructor,
+  instructorSubjects: state => state.instructorSubjects,
+  instructorSubject: state => state.instructorSubject,
   errors: state => state.errors
 }
 
@@ -26,7 +30,7 @@ const mutations = {
     data) {
     state.instructor = data;
   },
-  DELETE_INSTRUCTOR(state, data) {
+  REMOVE_INSTRUCTOR(state, data) {
     let index = state.instructors.findIndex(instructor => instructor.id === data.id);
     state.instructors.splice(index, 1);
   },
@@ -34,6 +38,25 @@ const mutations = {
     let index = state.instructors.findIndex(instructor => instructor.id === data.id);
     let instructor = state.instructors[index];
     Object.assign(instructor, data);
+  },
+  ADD_INSTRUCTOR_SUBJECT(state, data) {
+    state.instructorSubjects.unshift(data);
+  },
+  SET_INSTRUCTOR_SUBJECTS(state, data) {
+    state.instructorSubjects = data;
+  },
+  SET_INSTRUCTOR_SUBJECT(state,
+    data) {
+    state.instructorSubject = data;
+  },
+  REMOVE_INSTRUCTOR_SUBJECT(state, data) {
+    let index = state.instructorSubjects.findIndex(instructor => instructor.id === data.id);
+    state.instructorSubjects.splice(index, 1);
+  },
+  UPDATE_INSTRUCTOR_SUBJECT(state, data) {
+    let index = state.instructorSubjects.findIndex(el => el.id === data.id);
+    let subject = state.instructorSubjects[index];
+    Object.assign(subject, data);
   },
   SET_ERRORS(state, errors) {
     state.errors = errors;
@@ -67,18 +90,11 @@ const actions = {
   async fetchInstructor({
     commit
   }, id) {
-
-    let instructor = getters.getInstructorById(id);
-
-    if (instructor) {
-      commit('SET_INSTRUCTOR', instructor)
-    } else {
-      await InstructorService.getInstructor(id).then(response => {
-        commit('SET_INSTRUCTOR', response.data)
-      }).catch(error => {
-        return error.response.data;
-      })
-    }
+    await InstructorService.getInstructor(id).then(response => {
+      commit('SET_INSTRUCTOR', response.data)
+    }).catch(error => {
+      return error.response.data;
+    })
   },
 
   deleteInstructor({
@@ -86,7 +102,7 @@ const actions = {
   }, payload) {
     try {
       InstructorService.deleteInstructor(payload.id);
-      commit('DELETE_INSTRUCTOR', payload)
+      commit('REMOVE_INSTRUCTOR', payload)
 
     } catch (error) {
       return error.response.data;
@@ -102,7 +118,56 @@ const actions = {
     } catch (error) {
       return error.response.data
     }
-  }
+  },
+
+  async fetchInstructorSubjects({
+    commit,
+    dispatch
+  }, query) {
+    await InstructorService.getInstructorSubjects(query)
+      .then(response => {
+        commit('SET_INSTRUCTOR_SUBJECTS', response.data[0])
+      })
+      .catch(error => {
+        return error.response.data;
+      })
+  },
+
+  async fetchInstructorSubject({
+    commit,
+    dispatch
+  }, id) {
+    await InstructorService.getInstructorSubject(id)
+      .then(response => {
+        commit('SET_INSTRUCTOR_SUBJECT', response.data)
+      })
+      .catch(error => {
+        return error.response.data;
+      })
+  },
+
+  deleteInstructorSubject({
+    commit
+  }, payload) {
+    try {
+      InstructorService.deleteInstructorSubject(payload.id);
+      commit('REMOVE_INSTRUCTOR_SUBJECT', payload)
+
+    } catch (error) {
+      return error.response.data;
+    }
+  },
+
+  async updateInstructorSubject({
+    commit
+  }, payload) {
+    try {
+      await InstructorService.updateInstructorSubject(payload);
+      commit('UPDATE_INSTRUCTOR_SUBJECT', payload);
+    } catch (error) {
+      return error.response.data
+    }
+  },
 
 }
 

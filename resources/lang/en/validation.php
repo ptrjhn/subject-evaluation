@@ -156,6 +156,10 @@ return [
             'required' => 'curriculum is required',
             'exists' => 'curriculum not found in the database'
         ],
+        'instructor_id' => [
+            'required' => 'instructor is required',
+            'exists' => 'instructor not found in the database'
+        ],
 
     ],
 

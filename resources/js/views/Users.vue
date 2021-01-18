@@ -48,9 +48,13 @@
                 </b-field>
 
                 <b-field label="User Type">
-                  <b-select v-model="formData.user_type" expanded placeholder="Select user type">
-                    <option value="Administrator">Administrator</option>
-                    <option value="Standard User">Standard User</option>
+                  <b-select
+                    v-model="formData.user_type"
+                    expanded
+                    placeholder="Select user type"
+                  >
+                    <option value="Super Admin">Super Admin</option>
+                    <option value="Admin">Admin</option>
                   </b-select>
                 </b-field>
               </section>
@@ -101,6 +105,7 @@
               <div class="buttons is-right">
                 <b-tooltip label="Click to edit" position="is-left">
                   <button
+                    v-if="props.row.user_type != 'Super Admin'"
                     class="button is-link btn-rounded"
                     @click="edit(props.row)"
                   >
@@ -110,7 +115,7 @@
                 <b-tooltip label="Click to Delete" position="is-left">
                   <button
                     class="button is-danger btn-rounded"
-                     v-if="props.row.user_type != 'Administrator'"
+                    v-if="props.row.user_type != 'Super Admin'"
                     type="button"
                     @click.prevent="deleteConfirmation(props.row)"
                   >
@@ -155,7 +160,7 @@ export default {
     HeroBar,
     TitleBar,
     ModalBox,
-    CardComponent
+    CardComponent,
   },
   data() {
     return {
@@ -171,11 +176,11 @@ export default {
         source_id: 0,
         email: "",
         user_type: "",
-      }
+      },
     };
   },
   computed: {
-    ...mapGetters("users", ["users", "user"])
+    ...mapGetters("users", ["users", "user"]),
   },
 
   created() {
@@ -188,7 +193,7 @@ export default {
       "fetctUser",
       "createUser",
       "updateUser",
-      "deleteUser"
+      "deleteUser",
     ]),
 
     edit(data) {
@@ -209,7 +214,7 @@ export default {
           hasIcon: true,
           onConfirm: () => {
             this.remove(this.trashObject);
-          }
+          },
         });
       }
     },
@@ -223,7 +228,7 @@ export default {
         hasIcon: true,
         closable: true,
         qeue: false,
-        autoClose: true
+        autoClose: true,
       });
     },
 
@@ -277,7 +282,7 @@ export default {
         user_type: "",
         source_id: 0,
       };
-    }
-  }
+    },
+  },
 };
 </script>

@@ -211,6 +211,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -714,14 +719,14 @@ var render = function() {
                                   [
                                     _c(
                                       "option",
-                                      { attrs: { value: "Administrator" } },
-                                      [_vm._v("Administrator")]
+                                      { attrs: { value: "Super Admin" } },
+                                      [_vm._v("Super Admin")]
                                     ),
                                     _vm._v(" "),
                                     _c(
                                       "option",
-                                      { attrs: { value: "Standard User" } },
-                                      [_vm._v("Standard User")]
+                                      { attrs: { value: "Admin" } },
+                                      [_vm._v("Admin")]
                                     )
                                   ]
                                 )
@@ -842,27 +847,29 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      _c(
-                                        "button",
-                                        {
-                                          staticClass:
-                                            "button is-link btn-rounded",
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.edit(props.row)
-                                            }
-                                          }
-                                        },
-                                        [
-                                          _c("b-icon", {
-                                            attrs: {
-                                              icon: "pencil",
-                                              size: "is-small"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      )
+                                      props.row.user_type != "Super Admin"
+                                        ? _c(
+                                            "button",
+                                            {
+                                              staticClass:
+                                                "button is-link btn-rounded",
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.edit(props.row)
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _c("b-icon", {
+                                                attrs: {
+                                                  icon: "pencil",
+                                                  size: "is-small"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
+                                        : _vm._e()
                                     ]
                                   ),
                                   _vm._v(" "),
@@ -875,7 +882,7 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      props.row.user_type != "Administrator"
+                                      props.row.user_type != "Super Admin"
                                         ? _c(
                                             "button",
                                             {

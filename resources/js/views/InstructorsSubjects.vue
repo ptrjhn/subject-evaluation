@@ -1,9 +1,7 @@
 <template>
   <div>
     <div>
-      <title-bar
-        :title-stack="['Master Files', 'Curriculum Subjects', 'List']"
-      />
+      <title-bar :title-stack="['Instructor Subjects']" />
       <hero-bar>
         <button class="button is-default" @click="showModal()" slot="right">
           <b-icon icon="file-plus" custom-size="default" class="i" />
@@ -11,7 +9,7 @@
         </button>
         <button
           class="button is-default ml-2"
-          @click="navigateToCurriculums()"
+          @click="previousPage()"
           slot="right"
         >
           <span>Back</span>
@@ -20,16 +18,6 @@
       <section class="section is-main-section">
         <card-component class="has-table has-mobile-sort-spaced">
           <card-toolbar>
-            <button
-              slot="right"
-              type="button"
-              class="button is-primary"
-              @click="print()"
-            >
-              <b-icon icon="printer" custom-size="default" class="i" />
-              <span>Print</span>
-            </button>
-
             <b-select v-model="perPage" slot="left">
               <option value="5">5 per page</option>
               <option value="10">10 per page</option>
@@ -68,7 +56,7 @@
                       </template>
                     </b-autocomplete>
                   </b-field>
-                  <b-field label="Semester">
+                  <!-- <b-field label="Semester">
                     <template slot="label">
                       Semester
                       <span class="has-text-danger">*</span>
@@ -82,7 +70,7 @@
                       <option value="Second">Second</option>
                       <option value="Summer">Summer</option>
                     </b-select>
-                  </b-field>
+                  </b-field> -->
                 </section>
                 <footer class="modal-card-foot">
                   <button type="submit" class="button is-success">
@@ -210,63 +198,44 @@ export default {
       openedDetails: [],
       checkedRows: [],
       isNew: true,
-      id: this.$route.params.id,
       filteredSubjectsTags: [],
-
-      tags: {
-        prerequisite: [],
-      },
-
       formData: {
         id: "",
-        course_id: "",
-        sy_id: this.sy,
-        units: "",
-        prerequisite: [],
+        instructor_id: "",
+        sy_id: "",
+        semester_id: "",
         subject_code: "",
-        lec: "",
-        subject_id: "",
-        lab: "",
-        year_level: "",
-        curriculum_year: "",
-        semester_id: this.semester,
+        subject_description: "",
+        units: "",
       },
     };
   },
 
   computed: {
-    ...mapGetters("courseSubject", ["coursesSubjects", "courseSubject"]),
-    ...mapGetters("courses", ["courses"]),
     ...mapGetters("subjects", ["subjects"]),
-    ...mapGetters("curriculums", ["curriculum"]),
     ...mapGetters("instructors", ["instructor", "instructorSubjects"]),
-    ...mapGetters("academicYears", ["academicYears"]),
 
     sy() {
-      return this.$store.state.currentSY.id;
+      return this.$store.state.currentSY;
     },
     semester() {
-      return this.$store.state.currentSem.id;
+      return this.$store.state.currentSem;
     },
   },
 
-  async created() {
-    await this.fetchSubjects();
+  created() {
+    this.fetchSubjects();
+    this.fetchInstructorLoad();
+    this.filteredSubjectsTags = this.subjects;
   },
 
   methods: {
-    ...mapActions("courseSubject", [
-      "fetchCourseSubject",
-      "fetchCoursesSubjects",
-      "createCourseSubject",
-      "updateCourseSubject",
-      "deleteCourseSubject",
-    ]),
     ...mapActions("subjects", ["fetchSubjects"]),
-    ...mapActions("academicYears", ["fetchAcademicYears"]),
     ...mapActions("instructors", [
       "fetchInstructor",
       "fetchInstructorSubjects",
+      "updateInstructorSubject",
+      "createInstructorSubject",
     ]),
 
     getFilteredSubjectTags(text) {
@@ -281,27 +250,29 @@ export default {
       });
     },
 
-    async fetchSubjects() {
+    async fetchInstructorLoad() {
       await this.fetchInstructorSubjects({
-        instructor_id: this.$route.params.id,
+        instructor_id: id,
         sy_id: this.sy,
         semester_id: this.semester,
       });
       this.filteredSubjectsTags = this.subjects;
     },
 
+    previousPage() {
+      this.$router.go(-1);
+    },
+
     setSubjectDetails(option) {
+      const id = this.$route.params.id;
       if (option !== null) {
         this.formData.subject_id = option.id;
         this.formData.units = option.unit;
         this.formData.subject_code = option.code;
         this.formData.subject_description = option.description;
-        this.formData.lab = option.lab;
-        this.formData.lec = option.lec;
-        this.formData.sy_id = this.sy;
-        this.formData.semester_id = this.semester;
-
-        console.log(this.formData);
+        this.formData.sy_id = this.sy.id;
+        this.formData.instructor_id = id;
+        this.formData.semester_id = this.semester.id;
       }
     },
 
@@ -332,32 +303,25 @@ export default {
       }
     },
 
-    mapSubjectCode() {
-      this.formData.prerequisite = this.tags.prerequisite.map((item) => {
-        return item.code;
-      });
-      this.formData.prerequisite = this.formData.prerequisite.toString();
-    },
-
     async save() {
-      let response = null;
-      this.mapSubjectCode();
       if (this.isNew) {
-        response = await this.createCourseSubject(this.formData);
-        if (response == undefined || response == null) {
-          this.isModalActive = false;
-          this.showNotification("Successfully created", "success");
-        } else {
-          this.showErrorMessage(response);
-        }
+        await this.createInstructorSubject(this.formData)
+          .then(() => {
+            this.isModalActive = false;
+            this.showNotification("Successfully created", "success");
+          })
+          .catch((response) => {
+            this.showErrorMessage(response);
+          });
       } else {
-        response = await this.updateCourseSubject(this.formData);
-        if (response == undefined || response == null) {
-          this.isModalActive = false;
-          this.showNotification("Successfully updated", "success");
-        } else {
-          this.showErrorMessage(response);
-        }
+        await this.updateInstructorSubject(this.formData)
+          .then(() => {
+            this.isModalActive = false;
+            this.showNotification("Successfully updated", "success");
+          })
+          .catch((response) => {
+            this.showErrorMessage(response);
+          });
       }
     },
 
@@ -370,47 +334,24 @@ export default {
       this.isModalActive = false;
     },
 
-    navigateToCurriculums() {
-      this.$router.push({ path: "/courses/curriculums" });
-    },
-
     showModal() {
       this.clearForm();
       this.isModalActive = true;
       this.isNew = true;
-
-      this.formData.course_id = this.curriculum.course_id;
-      this.formData.curriculum_id = this.curriculum.id;
-    },
-
-    print() {
-      let routeData = this.$router.resolve({
-        name: "curriculum-subjects-print",
-        params: { curriculum_id: this.curriculum_id },
-      });
-      window.open(routeData.href, "_blank");
     },
 
     clearForm() {
       this.formData = {
         id: "",
-        course_id: "",
-        sy_id: "",
-        units: "",
-        prerequisite: [],
+        instructor_id: "",
+        sy_id: this.sy,
+        semester_id: this.semester,
         subject_code: "",
-        lec: "",
-        subject_id: "",
-        lab: "",
-        year_level: "",
-        semester: "",
-        curriculum_id: "",
+        subject_description: "",
+        units: "",
       };
 
-      this.options.course.searchText = "";
       this.options.subject.searchText = "";
-      this.options.academicYear.searchText = "";
-      this.tags.prerequisite = [];
     },
   },
 };

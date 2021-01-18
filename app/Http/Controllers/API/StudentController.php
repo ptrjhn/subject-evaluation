@@ -116,8 +116,6 @@ class StudentController extends Controller
                 'religion' => $request->religion,
                 'course_id' => $request->course_id,
                 'curriculum_id' => $request->curriculum_id,
-                'username' => $request->username,
-                'password' => $request->password,
             ]);
 
             return response()->json([

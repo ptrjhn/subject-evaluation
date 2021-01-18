@@ -406,7 +406,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               _this.fetchCourses();
 
               if (!(_this.$route.params.id !== undefined)) {
-                _context.next = 10;
+                _context.next = 12;
                 break;
               }
 
@@ -415,15 +415,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               return _this.fetchStudent(_this.$route.params.id);
 
             case 5:
-              _this.form.email = _this.student.account.email;
               Object.assign(_this.form, _this.student);
+              _this.form.email = _this.student.account.email;
+              _this.form.user_id = _this.student.account.id;
               _this.form.password = _this.student.account.password;
+              console.log(_this.form.user_id);
 
               _this.getCurriculumsByCourse(_this.student.course_id);
 
               _this.options.course.searchText = _this.student.course.description;
 
-            case 10:
+            case 12:
             case "end":
               return _context.stop();
           }
@@ -431,7 +433,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, _callee);
     }))();
   },
-  methods: _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])("courses", ["fetchCourses"])), Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])("students", ["updateStudent", "createStudent", "fetchStudent"])), Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])("users", ["createUser", "updateUser", "fetchUser"])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])("courses", ["fetchCourses"])), Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])("students", ["updateStudent", "createStudent", "fetchStudent"])), Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])("users", ["createUser", "updateUser"])), {}, {
     getCurriculumsByCourse: function getCurriculumsByCourse(id) {
       var _this2 = this;
 
@@ -453,7 +455,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var response;
+        var response, _response;
+
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -463,7 +466,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 _this3.form.birth_date = moment__WEBPACK_IMPORTED_MODULE_1___default()(_this3.bday).format("YYYY-MM-DD");
 
                 if (!_this3.isNew) {
-                  _context2.next = 10;
+                  _context2.next = 16;
                   break;
                 }
 
@@ -471,23 +474,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return _this3.createStudent(_this3.form);
 
               case 6:
-                response = _context2.sent;
+                _response = _context2.sent;
 
-                if (response == undefined || response == null) {
-                  // await this.account();
-                  _this3.showNotification("Successfully Saved.", "success");
-                } else {
-                  _this3.errors = response.errors;
+                if (!(_response == undefined || _response == null)) {
+                  _context2.next = 13;
+                  break;
                 }
 
-                _context2.next = 12;
-                break;
+                _context2.next = 10;
+                return _this3.saveAccount();
 
               case 10:
-                _context2.next = 12;
+                _this3.showNotification("Successfully Saved.", "success");
+
+                _context2.next = 14;
+                break;
+
+              case 13:
+                _this3.errors = _response.errors;
+
+              case 14:
+                _context2.next = 18;
+                break;
+
+              case 16:
+                _context2.next = 18;
                 return _this3.update();
 
-              case 12:
+              case 18:
               case "end":
                 return _context2.stop();
             }
@@ -506,13 +520,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               case 0:
                 response = null;
                 _context3.next = 3;
-                return _this4.updateStudent(_this4.form);
+                return _this4.updateStudent(_this4.form).then(function () {
+                  _this4.updateAccount();
+                });
 
               case 3:
                 response = _context3.sent;
 
                 if (response == undefined || response == null) {
-                  // await this.account(data);
                   _this4.showNotification("Successfully updated", "success");
                 } else {
                   _this4.errors = response.errors;
@@ -569,9 +584,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 _context5.next = 2;
                 return _this6.createUser({
                   user_type: "Student",
-                  student_id: data,
+                  student_id: data.id,
                   name: "".concat(_this6.form.first_name, " ").concat(_this6.form.last_name),
                   email: _this6.form.email,
+                  instructor_id: null,
                   password: _this6.form.password
                 });
 
@@ -587,20 +603,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+        var id, payload;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
-                _context6.next = 2;
-                return _this7.updateUser({
+                id = _this7.form.user_id;
+                payload = {
                   user_type: "Student",
                   student_id: _this7.form.id,
                   name: "".concat(_this7.form.first_name, " ").concat(_this7.form.last_name),
                   email: _this7.form.email,
+                  instructor_id: null,
                   password: _this7.form.password
-                });
+                };
+                _context6.next = 4;
+                return _apiClient__WEBPACK_IMPORTED_MODULE_3__["default"].put("/users/".concat(_this7.form.user_id), payload);
 
-              case 2:
+              case 4:
               case "end":
                 return _context6.stop();
             }

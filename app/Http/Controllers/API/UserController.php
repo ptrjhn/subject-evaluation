@@ -21,7 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::latest()->get();
+        $users = User::whereIn('user_type', ['Super Admin', 'Admin'])->latest()->get();
 
         return response()->json([
             'data' => $users
@@ -62,7 +62,7 @@ class UserController extends Controller
             'instructor_id' => $request['instructor_id'],
             'user_type' => $request['user_type'],
             'email' => $request['email'],
-            'password' => $request['user_type'] !== 'Super Admin' ? bcrypt('secret') : bcrypt($request['password']),
+            'password' => bcrypt($request['password']),
         ]);
 
         return response()->json($user);
@@ -110,7 +110,13 @@ class UserController extends Controller
 
 
         $user = User::findOrFail($id);
-        $user->update($request->all());
+        $user->name = $request->name;
+        $user->student_id = $request->student_id;
+        $user->instructor_id = $request->instructor_id;
+        $user->user_type = $request->user_type;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->update();
 
         return response()->json($user);
     }

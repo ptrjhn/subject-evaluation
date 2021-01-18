@@ -59,7 +59,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var vue_json_excel__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue-json-excel */ "./node_modules/vue-json-excel/dist/vue-json-excel.esm.js");
+/* harmony import */ var _apiClient__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../apiClient */ "./resources/js/apiClient.js");
+/* harmony import */ var vue_json_excel__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-json-excel */ "./node_modules/vue-json-excel/dist/vue-json-excel.esm.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -247,6 +248,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -256,7 +266,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_8___default.a.component("downloadExcel", vue_json_excel__WEBPACK_IMPORTED_MODULE_9__["default"]);
+
+vue__WEBPACK_IMPORTED_MODULE_8___default.a.component("downloadExcel", vue_json_excel__WEBPACK_IMPORTED_MODULE_10__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     CardToolbar: _components_CardToolbar__WEBPACK_IMPORTED_MODULE_6__["default"],
@@ -278,7 +289,10 @@ vue__WEBPACK_IMPORTED_MODULE_8___default.a.component("downloadExcel", vue_json_e
         first_name: "",
         middle_name: "",
         last_name: "",
-        is_active: true
+        is_active: true,
+        email: "",
+        user_id: null,
+        password: ""
       },
       json_fields: {
         "First Name": "first_name",
@@ -291,11 +305,101 @@ vue__WEBPACK_IMPORTED_MODULE_8___default.a.component("downloadExcel", vue_json_e
   created: function created() {
     this.fetchInstructors();
   },
-  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_7__["mapActions"])("instructors", ["fetchInstructors", "s", "createInstructor", "updateInstructor", "deleteInstructor"])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_7__["mapActions"])("instructors", ["fetchInstructors", "createInstructor", "updateInstructor", "deleteInstructor"])), Object(vuex__WEBPACK_IMPORTED_MODULE_7__["mapActions"])("users", ["createUser", "updateUser"])), {}, {
+    account: function account() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (!(_this.formData.user_id === null)) {
+                  _context.next = 5;
+                  break;
+                }
+
+                _context.next = 3;
+                return _this.saveAccount();
+
+              case 3:
+                _context.next = 7;
+                break;
+
+              case 5:
+                _context.next = 7;
+                return _this.updateAccount();
+
+              case 7:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    saveAccount: function saveAccount() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return _this2.createUser({
+                  user_type: "Instructor",
+                  instructor_id: _this2.formData.id,
+                  id: _this2.formData.user_id,
+                  student_id: null,
+                  name: "".concat(_this2.formData.first_name, " ").concat(_this2.formData.last_name),
+                  email: _this2.formData.email,
+                  password: _this2.formData.password
+                });
+
+              case 2:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    updateAccount: function updateAccount() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var payload;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                payload = {
+                  user_type: "Instructor",
+                  instructor_id: _this3.formData.id,
+                  name: "".concat(_this3.formData.first_name, " ").concat(_this3.formData.last_name),
+                  email: _this3.formData.email,
+                  student_id: null,
+                  password: _this3.formData.password
+                };
+                _context3.next = 3;
+                return _apiClient__WEBPACK_IMPORTED_MODULE_9__["default"].put("/users/".concat(_this3.formData.user_id), payload);
+
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
     edit: function edit(data) {
       this.isModalActive = true;
       this.isNew = false;
       Object.assign(this.formData, data);
+      this.formData.email = data.account.email;
+      this.formData.password = data.account.password;
+      this.formData.user_id = data.account.id;
     },
     navigateToSubjects: function navigateToSubjects(params) {
       this.$router.push({
@@ -303,7 +407,7 @@ vue__WEBPACK_IMPORTED_MODULE_8___default.a.component("downloadExcel", vue_json_e
       });
     },
     deleteConfirmation: function deleteConfirmation() {
-      var _this = this;
+      var _this4 = this;
 
       var trashObject = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       this.trashObject = trashObject;
@@ -316,64 +420,61 @@ vue__WEBPACK_IMPORTED_MODULE_8___default.a.component("downloadExcel", vue_json_e
           type: "is-danger",
           hasIcon: true,
           onConfirm: function onConfirm() {
-            _this.remove(_this.trashObject);
+            _this4.remove(_this4.trashObject);
           }
         });
       }
     },
     save: function save() {
-      var _this2 = this;
+      var _this5 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response, _response;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                if (!_this2.isNew) {
-                  _context.next = 7;
+                if (!_this5.isNew) {
+                  _context4.next = 6;
                   break;
                 }
 
-                _context.next = 3;
-                return _this2.createInstructor(_this2.formData);
+                response = null;
+                _context4.next = 4;
+                return _this5.createInstructor(_this5.formData).then(function (res) {
+                  _this5.formData.id = res.data.id;
 
-              case 3:
-                response = _context.sent;
+                  _this5.saveAccount();
 
-                if (response == undefined || response == null) {
-                  _this2.isModalActive = false;
+                  _this5.showNotification("Successfully created", "success");
 
-                  _this2.showNotification("Successfully created", "success");
-                } else {
-                  _this2.showErrorMessage(response, "danger");
-                }
+                  _this5.isModalActive = false;
+                })["catch"](function (response) {
+                  _this5.showErrorMessage(response, "danger");
+                });
 
-                _context.next = 11;
+              case 4:
+                _context4.next = 8;
                 break;
 
-              case 7:
-                _context.next = 9;
-                return _this2.updateInstructor(_this2.formData);
+              case 6:
+                _context4.next = 8;
+                return _this5.updateInstructor(_this5.formData).then(function () {
+                  _this5.showNotification("Successfully updated", "success");
 
-              case 9:
-                _response = _context.sent;
+                  _this5.updateAccount();
 
-                if (_response == undefined || _response == null) {
-                  _this2.isModalActive = false;
+                  _this5.isModalActive = false;
+                })["catch"](function (response) {
+                  _this5.showErrorMessage(response, "danger");
+                });
 
-                  _this2.showNotification("Successfully updated", "success");
-                } else {
-                  _this2.showErrorMessage(_response, "danger");
-                }
-
-              case 11:
+              case 8:
               case "end":
-                return _context.stop();
+                return _context4.stop();
             }
           }
-        }, _callee);
+        }, _callee4);
       }))();
     },
     remove: function remove(data) {
@@ -394,7 +495,10 @@ vue__WEBPACK_IMPORTED_MODULE_8___default.a.component("downloadExcel", vue_json_e
         first_name: "",
         middle_name: "",
         last_name: "",
-        is_active: true
+        is_active: true,
+        user_id: "",
+        email: "",
+        password: ""
       };
     }
   })
@@ -762,6 +866,50 @@ var render = function() {
                                 })
                               ],
                               1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "b-field",
+                              { attrs: { label: "Email Address" } },
+                              [
+                                _c("b-input", {
+                                  attrs: {
+                                    placeholder: "Enter Email Address",
+                                    type: "text",
+                                    required: ""
+                                  },
+                                  model: {
+                                    value: _vm.formData.email,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.formData, "email", $$v)
+                                    },
+                                    expression: "formData.email"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "b-field",
+                              { attrs: { label: "Password" } },
+                              [
+                                _c("b-input", {
+                                  attrs: {
+                                    placeholder: "Enter Password",
+                                    type: "password",
+                                    required: ""
+                                  },
+                                  model: {
+                                    value: _vm.formData.password,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.formData, "password", $$v)
+                                    },
+                                    expression: "formData.password"
+                                  }
+                                })
+                              ],
+                              1
                             )
                           ],
                           1
@@ -869,40 +1017,6 @@ var render = function() {
                                 "div",
                                 { staticClass: "buttons is-right" },
                                 [
-                                  _c(
-                                    "b-tooltip",
-                                    {
-                                      attrs: {
-                                        label: "Print Subjects",
-                                        position: "is-top"
-                                      }
-                                    },
-                                    [
-                                      _c(
-                                        "button",
-                                        {
-                                          staticClass: "button is-primary",
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.navigateToSubjects(
-                                                props.row
-                                              )
-                                            }
-                                          }
-                                        },
-                                        [
-                                          _c("b-icon", {
-                                            attrs: {
-                                              icon: "printer",
-                                              size: "is-small"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      )
-                                    ]
-                                  ),
-                                  _vm._v(" "),
                                   _c(
                                     "b-tooltip",
                                     {

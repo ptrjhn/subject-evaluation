@@ -37,7 +37,8 @@ export default {
     access() {
       if (this.user.user_type === "Student") return this.studentAccess();
       if (this.user.user_type === "Super Admin") return this.superAdminAccess();
-      // if (this.user.user_type === "Instructor") this.instructorAccess();
+      if (this.user.user_type === "Admin") return this.adminAccess();
+      if (this.user.user_type === "Instructor") return this.instructorAccess();
     },
   },
   created() {
@@ -75,6 +76,27 @@ export default {
             to: { name: "student.curriculum" },
             label: "Curriculum",
             icon: "book",
+            adminAccess: false,
+          },
+        ],
+      ];
+    },
+
+    instructorAccess() {
+      return [
+        [
+          {
+            to: { name: "home" },
+            icon: "desktop-mac",
+            label: "Dashboard",
+            adminAccess: false,
+          },
+        ],
+        [
+          {
+            to: { name: "instructor.subjects" },
+            label: "Subjects",
+            icon: "book-search",
             adminAccess: false,
           },
         ],
@@ -154,12 +176,6 @@ export default {
 
         [
           {
-            to: { name: "class.managements" },
-            label: "Class Management",
-            icon: "book-search",
-            adminAccess: true,
-          },
-          {
             to: { name: "subject.evaluation" },
             label: "Subject Evaluation",
             icon: "book-search",
@@ -177,7 +193,7 @@ export default {
     },
 
     adminAccess() {
-      [
+      return [
         [
           {
             to: { name: "home" },
@@ -197,63 +213,21 @@ export default {
           },
 
           {
-            to: { name: "academic-years-list" },
-            label: "Academic Year",
-            icon: "calendar-month",
-            updateMark: true,
-            adminAccess: true,
-          },
-          {
             to: { name: "subjects-list" },
             label: "Subjects",
             icon: "bookshelf",
             adminAccess: false,
           },
-          {
-            to: { name: "instructors-list" },
-            label: "Instructors",
-            icon: "account-tie",
-            adminAccess: true,
-          },
-          {
-            to: { name: "users-list" },
-            label: "Users",
-            icon: "account-details",
-            adminAccess: true,
-          },
-          {
-            to: { name: "courses-list" },
-            label: "Courses",
-            icon: "book-multiple",
-            adminAccess: true,
-          },
+
           {
             to: { name: "courses-curriculums" },
             label: "Curriculums",
             icon: "notebook",
             adminAccess: false,
           },
-          {
-            to: { name: "sections-list" },
-            label: "Sections",
-            icon: "cogs",
-            adminAccess: true,
-          },
-          {
-            to: { name: "semesters" },
-            label: "Settings",
-            adminAccess: true,
-            icon: "cogs",
-          },
         ],
 
         [
-          {
-            to: { name: "class.managements" },
-            label: "Class Management",
-            icon: "book-search",
-            adminAccess: true,
-          },
           {
             to: { name: "subject.evaluation" },
             label: "Subject Evaluation",

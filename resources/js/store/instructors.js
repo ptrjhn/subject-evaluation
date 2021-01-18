@@ -69,8 +69,11 @@ const actions = {
     dispatch
   }, payload) {
     try {
-      await InstructorService.postInstructor(payload);
-      commit('ADD_INSTRUCTOR', payload);
+      let {
+        data
+      } = await InstructorService.postInstructor(payload);
+      commit('ADD_INSTRUCTOR', data);
+      return data;
     } catch (errors) {
       return errors.response.data
     }
@@ -126,7 +129,7 @@ const actions = {
   }, query) {
     await InstructorService.getInstructorSubjects(query)
       .then(response => {
-        commit('SET_INSTRUCTOR_SUBJECTS', response.data[0])
+        commit('SET_INSTRUCTOR_SUBJECTS', response.data)
       })
       .catch(error => {
         return error.response.data;
@@ -166,6 +169,21 @@ const actions = {
       commit('UPDATE_INSTRUCTOR_SUBJECT', payload);
     } catch (error) {
       return error.response.data
+    }
+  },
+
+  async createInstructorSubject({
+    commit,
+    dispatch
+  }, payload) {
+    try {
+      let {
+        data
+      } = await InstructorService.postInstructorSubject(payload);
+      commit('ADD_INSTRUCTOR_SUBJECT', data);
+      return data;
+    } catch (errors) {
+      return errors.response.data
     }
   },
 

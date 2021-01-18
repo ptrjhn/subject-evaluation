@@ -23,14 +23,14 @@ const router = new Router({
       component: Main,
       meta: {
         requiresAuth: true,
-        userType: "Super Aadmin"
+        userType: "Super Admin"
       },
       children: [{
           path: "/home",
           name: "home",
           component: () => import("./views/Home.vue"),
           meta: {
-            userType: "Super Aadmin"
+            userType: "Super Admin"
           }
         },
         {
@@ -186,6 +186,15 @@ const router = new Router({
           }
         },
         {
+          path: "/instructor/subjects",
+          name: "instructor.subjects",
+          component: () => import("./views/InstructorsLoad.vue"),
+          meta: {
+            requiresAuth: true,
+            userType: "Instructor"
+          }
+        },
+        {
           path: "/instructors/:id/subjects",
           name: "instructors.subjects",
           component: () => import("./views/InstructorsSubjects.vue"),
@@ -221,17 +230,7 @@ const router = new Router({
       component: Login,
       meta: {
         requiresAuth: false,
-        userType: "Super Admin"
-      }
-    },
-
-    {
-      path: "/portal/login",
-      name: "user.",
-      component: Login,
-      meta: {
-        requiresAuth: false,
-        userType: "Super Admin"
+        userType: undefined
       }
     },
 
@@ -292,18 +291,8 @@ router.beforeEach((to, from, next) => {
   if (to.name == "login" && user) {
     next("/home");
   }
-
   next()
-  // if (
-  //   to.matched.some(
-  //     record =>
-  //     record.meta.userType !== undefined && record.meta.userType !== user.user_type
-  //   )
-  // ) {
-  //   next("/home");
-  // } else {
-  //   next();
-  // }
+
 });
 
 export default router;

@@ -69,6 +69,23 @@
                     required
                   ></b-input>
                 </b-field>
+                <b-field label="Email Address">
+                  <b-input
+                    placeholder="Enter Email Address"
+                    type="text"
+                    v-model="formData.email"
+                    required
+                  ></b-input>
+                </b-field>
+
+                <b-field label="Password">
+                  <b-input
+                    placeholder="Enter Password"
+                    type="password"
+                    v-model="formData.password"
+                    required
+                  ></b-input>
+                </b-field>
               </section>
               <footer class="modal-card-foot">
                 <button type="submit" class="button is-success">
@@ -120,14 +137,6 @@
               width="20%"
             >
               <div class="buttons is-right">
-                <b-tooltip label="Print Subjects" position="is-top">
-                  <button
-                    class="button is-primary"
-                    @click="navigateToSubjects(props.row)"
-                  >
-                    <b-icon icon="printer" size="is-small" />
-                  </button>
-                </b-tooltip>
                 <b-tooltip label="Subjects" position="is-top">
                   <button
                     class="button is-link"
@@ -182,6 +191,7 @@ import HeroBar from "@/components/HeroBar";
 import CardToolbar from "@/components/CardToolbar";
 import { mapGetters, mapActions } from "vuex";
 import Vue from "vue";
+import apiClient from "../apiClient";
 import JsonExcel from "vue-json-excel";
 Vue.component("downloadExcel", JsonExcel);
 
@@ -207,6 +217,9 @@ export default {
         middle_name: "",
         last_name: "",
         is_active: true,
+        email: "",
+        user_id: null,
+        password: "",
       },
       json_fields: {
         "First Name": "first_name",
@@ -226,16 +239,49 @@ export default {
   methods: {
     ...mapActions("instructors", [
       "fetchInstructors",
-      "s",
       "createInstructor",
       "updateInstructor",
       "deleteInstructor",
     ]),
+    ...mapActions("users", ["createUser", "updateUser"]),
+
+    async account() {
+      this.formData.user_id === null
+        ? await this.saveAccount()
+        : await this.updateAccount();
+    },
+
+    async saveAccount() {
+      await this.createUser({
+        user_type: "Instructor",
+        instructor_id: this.formData.id,
+        id: this.formData.user_id,
+        student_id: null,
+        name: `${this.formData.first_name} ${this.formData.last_name}`,
+        email: this.formData.email,
+        password: this.formData.password,
+      });
+    },
+
+    async updateAccount() {
+      var payload = {
+        user_type: "Instructor",
+        instructor_id: this.formData.id,
+        name: `${this.formData.first_name} ${this.formData.last_name}`,
+        email: this.formData.email,
+        student_id: null,
+        password: this.formData.password,
+      };
+      await apiClient.put(`/users/${this.formData.user_id}`, payload);
+    },
 
     edit(data) {
       this.isModalActive = true;
       this.isNew = false;
       Object.assign(this.formData, data);
+      this.formData.email = data.account.email;
+      this.formData.password = data.account.password;
+      this.formData.user_id = data.account.id;
     },
 
     navigateToSubjects(params) {
@@ -261,22 +307,27 @@ export default {
 
     async save() {
       if (this.isNew) {
-        let response = await this.createInstructor(this.formData);
-        if (response == undefined || response == null) {
-          this.isModalActive = false;
-          this.showNotification("Successfully created", "success");
-        } else {
-          this.showErrorMessage(response, "danger");
-        }
+        let response = null;
+        await this.createInstructor(this.formData)
+          .then((res) => {
+            this.formData.id = res.data.id;
+            this.saveAccount();
+            this.showNotification("Successfully created", "success");
+            this.isModalActive = false;
+          })
+          .catch((response) => {
+            this.showErrorMessage(response, "danger");
+          });
       } else {
-        let response = await this.updateInstructor(this.formData);
-        if (response == undefined || response == null) {
-          this.isModalActive = false;
-
-          this.showNotification("Successfully updated", "success");
-        } else {
-          this.showErrorMessage(response, "danger");
-        }
+        await this.updateInstructor(this.formData)
+          .then(() => {
+            this.showNotification("Successfully updated", "success");
+            this.updateAccount();
+            this.isModalActive = false;
+          })
+          .catch((response) => {
+            this.showErrorMessage(response, "danger");
+          });
       }
     },
 
@@ -301,6 +352,9 @@ export default {
         middle_name: "",
         last_name: "",
         is_active: true,
+        user_id: "",
+        email: "",
+        password: "",
       };
     },
   },

@@ -2079,7 +2079,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_4__["mapGetters"])("auth", ["user"])), {}, {
     access: function access() {
       if (this.user.user_type === "Student") return this.studentAccess();
-      if (this.user.user_type === "Super Admin") return this.superAdminAccess(); // if (this.user.user_type === "Instructor") this.instructorAccess();
+      if (this.user.user_type === "Super Admin") return this.superAdminAccess();
+      if (this.user.user_type === "Admin") return this.adminAccess();
+      if (this.user.user_type === "Instructor") return this.instructorAccess();
     }
   }),
   created: function created() {
@@ -2116,6 +2118,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         },
         label: "Curriculum",
         icon: "book",
+        adminAccess: false
+      }]];
+    },
+    instructorAccess: function instructorAccess() {
+      return [[{
+        to: {
+          name: "home"
+        },
+        icon: "desktop-mac",
+        label: "Dashboard",
+        adminAccess: false
+      }], [{
+        to: {
+          name: "instructor.subjects"
+        },
+        label: "Subjects",
+        icon: "book-search",
         adminAccess: false
       }]];
     },
@@ -2194,13 +2213,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         icon: "cogs"
       }], [{
         to: {
-          name: "class.managements"
-        },
-        label: "Class Management",
-        icon: "book-search",
-        adminAccess: true
-      }, {
-        to: {
           name: "subject.evaluation"
         },
         label: "Subject Evaluation",
@@ -2216,7 +2228,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }]];
     },
     adminAccess: function adminAccess() {
-      [[{
+      return [[{
         to: {
           name: "home"
         },
@@ -2233,14 +2245,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         adminAccess: false
       }, {
         to: {
-          name: "academic-years-list"
-        },
-        label: "Academic Year",
-        icon: "calendar-month",
-        updateMark: true,
-        adminAccess: true
-      }, {
-        to: {
           name: "subjects-list"
         },
         label: "Subjects",
@@ -2248,54 +2252,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         adminAccess: false
       }, {
         to: {
-          name: "instructors-list"
-        },
-        label: "Instructors",
-        icon: "account-tie",
-        adminAccess: true
-      }, {
-        to: {
-          name: "users-list"
-        },
-        label: "Users",
-        icon: "account-details",
-        adminAccess: true
-      }, {
-        to: {
-          name: "courses-list"
-        },
-        label: "Courses",
-        icon: "book-multiple",
-        adminAccess: true
-      }, {
-        to: {
           name: "courses-curriculums"
         },
         label: "Curriculums",
         icon: "notebook",
         adminAccess: false
-      }, {
-        to: {
-          name: "sections-list"
-        },
-        label: "Sections",
-        icon: "cogs",
-        adminAccess: true
-      }, {
-        to: {
-          name: "semesters"
-        },
-        label: "Settings",
-        adminAccess: true,
-        icon: "cogs"
       }], [{
-        to: {
-          name: "class.managements"
-        },
-        label: "Class Management",
-        icon: "book-search",
-        adminAccess: true
-      }, {
         to: {
           name: "subject.evaluation"
         },
@@ -86815,7 +86777,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     component: _Main_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
     meta: {
       requiresAuth: true,
-      userType: "Super Aadmin"
+      userType: "Super Admin"
     },
     children: [{
       path: "/home",
@@ -86824,7 +86786,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
         return Promise.resolve(/*! import() */).then(__webpack_require__.bind(null, /*! ./views/Home.vue */ "./resources/js/views/Home.vue"));
       },
       meta: {
-        userType: "Super Aadmin"
+        userType: "Super Admin"
       }
     }, {
       path: "/users",
@@ -86952,7 +86914,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: "/transactions/student/subjects/evaluation",
       name: "subject.evaluation",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! ./views/SubjectEvaluation.vue */ "./resources/js/views/SubjectEvaluation.vue"));
+        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! ./views/SubjectEvaluation.vue */ "./resources/js/views/SubjectEvaluation.vue"));
       },
       meta: {
         requiresAuth: true,
@@ -86972,7 +86934,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: "/student/subjects",
       name: "student.subjects",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 19).then(__webpack_require__.bind(null, /*! ./views/Grades.vue */ "./resources/js/views/Grades.vue"));
+        return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! ./views/Grades.vue */ "./resources/js/views/Grades.vue"));
       },
       meta: {
         requiresAuth: true,
@@ -86982,11 +86944,21 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: "/student/curriculum",
       name: "student.curriculum",
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! ./views/StudentCurriculum.vue */ "./resources/js/views/StudentCurriculum.vue"));
+        return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! ./views/StudentCurriculum.vue */ "./resources/js/views/StudentCurriculum.vue"));
       },
       meta: {
         requiresAuth: true,
         userType: "Student"
+      }
+    }, {
+      path: "/instructor/subjects",
+      name: "instructor.subjects",
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 20).then(__webpack_require__.bind(null, /*! ./views/InstructorsLoad.vue */ "./resources/js/views/InstructorsLoad.vue"));
+      },
+      meta: {
+        requiresAuth: true,
+        userType: "Instructor"
       }
     }, {
       path: "/instructors/:id/subjects",
@@ -87025,21 +86997,13 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     component: _views_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
     meta: {
       requiresAuth: false,
-      userType: "Super Admin"
-    }
-  }, {
-    path: "/portal/login",
-    name: "user.",
-    component: _views_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-    meta: {
-      requiresAuth: false,
-      userType: "Super Admin"
+      userType: undefined
     }
   }, {
     path: "/courses/curriculums/:curriculum_id/subjects/print",
     name: "curriculum-subjects-print",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 15).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculum.vue */ "./resources/js/views/PrintCurriculum.vue"));
+      return __webpack_require__.e(/*! import() */ 16).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculum.vue */ "./resources/js/views/PrintCurriculum.vue"));
     },
     meta: {
       requiresAuth: true,
@@ -87049,7 +87013,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     path: "/transaction/evaluation/:sy/:semester/student/:student_id",
     name: "student-form-print",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 17).then(__webpack_require__.bind(null, /*! ./views/PrintSubjects.vue */ "./resources/js/views/PrintSubjects.vue"));
+      return __webpack_require__.e(/*! import() */ 18).then(__webpack_require__.bind(null, /*! ./views/PrintSubjects.vue */ "./resources/js/views/PrintSubjects.vue"));
     },
     meta: {
       requiresAuth: true,
@@ -87059,7 +87023,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     path: "/student/:student_id/curriculum/grades",
     name: "student-curriculum-grades",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 16).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculumGrades.vue */ "./resources/js/views/PrintCurriculumGrades.vue"));
+      return __webpack_require__.e(/*! import() */ 17).then(__webpack_require__.bind(null, /*! ./views/PrintCurriculumGrades.vue */ "./resources/js/views/PrintCurriculumGrades.vue"));
     },
     meta: {
       userType: "Super Admin"
@@ -87068,7 +87032,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     path: "*",
     name: "not-found",
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 18).then(__webpack_require__.bind(null, /*! ./views/PageNotFound.vue */ "./resources/js/views/PageNotFound.vue"));
+      return __webpack_require__.e(/*! import() */ 19).then(__webpack_require__.bind(null, /*! ./views/PageNotFound.vue */ "./resources/js/views/PageNotFound.vue"));
     },
     meta: {
       userType: undefined
@@ -87098,16 +87062,7 @@ router.beforeEach(function (to, from, next) {
     next("/home");
   }
 
-  next(); // if (
-  //   to.matched.some(
-  //     record =>
-  //     record.meta.userType !== undefined && record.meta.userType !== user.user_type
-  //   )
-  // ) {
-  //   next("/home");
-  // } else {
-  //   next();
-  // }
+  next();
 });
 /* harmony default export */ __webpack_exports__["default"] = (router);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/process/browser.js */ "./node_modules/process/browser.js")))
@@ -88538,7 +88493,8 @@ var mutations = {
 var actions = {
   createInstructor: function createInstructor(_ref, payload) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var commit, dispatch;
+      var commit, dispatch, _yield$InstructorServ, data;
+
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -88549,21 +88505,22 @@ var actions = {
               return _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].postInstructor(payload);
 
             case 4:
-              commit('ADD_INSTRUCTOR', payload);
-              _context.next = 10;
-              break;
+              _yield$InstructorServ = _context.sent;
+              data = _yield$InstructorServ.data;
+              commit('ADD_INSTRUCTOR', data);
+              return _context.abrupt("return", data);
 
-            case 7:
-              _context.prev = 7;
+            case 10:
+              _context.prev = 10;
               _context.t0 = _context["catch"](1);
               return _context.abrupt("return", _context.t0.response.data);
 
-            case 10:
+            case 13:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[1, 7]]);
+      }, _callee, null, [[1, 10]]);
     }))();
   },
   fetchInstructors: function fetchInstructors(_ref2) {
@@ -88645,7 +88602,7 @@ var actions = {
               commit = _ref6.commit, dispatch = _ref6.dispatch;
               _context4.next = 3;
               return _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].getInstructorSubjects(query).then(function (response) {
-                commit('SET_INSTRUCTOR_SUBJECTS', response.data[0]);
+                commit('SET_INSTRUCTOR_SUBJECTS', response.data);
               })["catch"](function (error) {
                 return error.response.data;
               });
@@ -88719,6 +88676,38 @@ var actions = {
           }
         }
       }, _callee6, null, [[1, 7]]);
+    }))();
+  },
+  createInstructorSubject: function createInstructorSubject(_ref10, payload) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
+      var commit, dispatch, _yield$InstructorServ2, data;
+
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              commit = _ref10.commit, dispatch = _ref10.dispatch;
+              _context7.prev = 1;
+              _context7.next = 4;
+              return _services_InstructorService_js__WEBPACK_IMPORTED_MODULE_1__["default"].postInstructorSubject(payload);
+
+            case 4:
+              _yield$InstructorServ2 = _context7.sent;
+              data = _yield$InstructorServ2.data;
+              commit('ADD_INSTRUCTOR_SUBJECT', data);
+              return _context7.abrupt("return", data);
+
+            case 10:
+              _context7.prev = 10;
+              _context7.t0 = _context7["catch"](1);
+              return _context7.abrupt("return", _context7.t0.response.data);
+
+            case 13:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7, null, [[1, 10]]);
     }))();
   }
 };
@@ -89802,34 +89791,14 @@ var actions = {
     }
   },
   updateUser: function updateUser(_ref5, payload) {
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-      var commit;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              commit = _ref5.commit;
-              _context3.prev = 1;
-              _context3.next = 4;
-              return _services_UserService_js__WEBPACK_IMPORTED_MODULE_1__["default"].updateUser(payload);
+    var commit = _ref5.commit;
 
-            case 4:
-              commit('UPDATE_USER', payload);
-              _context3.next = 10;
-              break;
-
-            case 7:
-              _context3.prev = 7;
-              _context3.t0 = _context3["catch"](1);
-              return _context3.abrupt("return", _context3.t0.response.data);
-
-            case 10:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3, null, [[1, 7]]);
-    }))();
+    try {
+      _services_UserService_js__WEBPACK_IMPORTED_MODULE_1__["default"].updateUser(payload);
+      commit('UPDATE_USER', payload);
+    } catch (error) {
+      return error.response.data;
+    }
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({

@@ -93,11 +93,11 @@ const actions = {
     }
   },
 
-  async updateUser({
+  updateUser({
     commit
   }, payload) {
     try {
-      await UserService.updateUser(payload);
+      UserService.updateUser(payload);
       commit('UPDATE_USER', payload);
     } catch (error) {
       return error.response.data

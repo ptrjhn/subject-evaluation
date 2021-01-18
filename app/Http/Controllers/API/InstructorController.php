@@ -19,7 +19,7 @@ class InstructorController extends Controller
      */
     public function index()
     {
-        $instructor = Instructor::latest()->get();
+        $instructor = Instructor::with(['account'])->latest()->get();
 
         return response()->json([
             'data' => $instructor
@@ -40,6 +40,10 @@ class InstructorController extends Controller
         ];
 
         $validator = Validator::make($request->all(), [
+            'email' => [
+                'required', 'email', 'unique:users'
+            ],
+            'password' => ['required'],
             'first_name' => [
                 'required', new AlphaSpaceDash, new Propercase,
                 Rule::unique('instructors')->where(function ($query) use ($request) {
@@ -66,6 +70,8 @@ class InstructorController extends Controller
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => $request->password,
             'is_active' => true,
         ]);
 
@@ -78,7 +84,7 @@ class InstructorController extends Controller
 
     public function show($id)
     {
-        $selected = Instructor::findOrFail($id);
+        $selected = Instructor::with('account')->findOrFail($id);
 
         return response()->json([
             'data' => $selected

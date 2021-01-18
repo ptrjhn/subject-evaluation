@@ -22,9 +22,7 @@
       <section class="section is-main-section">
         <card-component
           class="has-table has-mobile-sort-spaced"
-          :title="
-            `${curriculum.course.course_code} - ${curriculum.curriculum_year}`
-          "
+          :title="`${curriculum.course.course_code} - ${curriculum.curriculum_year}`"
         >
           <card-toolbar>
             <button
@@ -96,7 +94,7 @@
                       v-model="options.subject.searchText"
                       :data="filteredSubjects"
                       field="code"
-                      @select="option => setSubjectDetails(option)"
+                      @select="(option) => setSubjectDetails(option)"
                       :clearable="true"
                     >
                       <template slot-scope="props">
@@ -326,7 +324,7 @@ export default {
     HeroBar,
     TitleBar,
     ModalBox,
-    CardComponent
+    CardComponent,
   },
   data() {
     return {
@@ -341,7 +339,7 @@ export default {
       filteredSubjectsTags: [],
 
       tags: {
-        prerequisite: []
+        prerequisite: [],
       },
 
       formData: {
@@ -356,8 +354,8 @@ export default {
         lab: "",
         year_level: "",
         curriculum_year: "",
-        semester: ""
-      }
+        semester: "",
+      },
     };
   },
 
@@ -366,7 +364,7 @@ export default {
     ...mapGetters("courses", ["courses"]),
     ...mapGetters("subjects", ["subjects"]),
     ...mapGetters("curriculums", ["curriculum"]),
-    ...mapGetters("academicYears", ["academicYears"])
+    ...mapGetters("academicYears", ["academicYears"]),
   },
 
   async created() {
@@ -382,7 +380,7 @@ export default {
       "fetchCoursesSubjects",
       "createCourseSubject",
       "updateCourseSubject",
-      "deleteCourseSubject"
+      "deleteCourseSubject",
     ]),
 
     ...mapActions("curriculums", ["fetchCurriculum"]),
@@ -392,12 +390,9 @@ export default {
     ...mapActions("academicYears", ["fetchAcademicYears"]),
 
     getFilteredSubjectTags(text) {
-      this.filteredSubjectsTags = this.subjects.filter(opt => {
+      this.filteredSubjectsTags = this.subjects.filter((opt) => {
         return (
-          opt.code
-            .toString()
-            .toLowerCase()
-            .indexOf(text.toLowerCase()) >= 0 ||
+          opt.code.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0 ||
           opt.description
             .toString()
             .toLowerCase()
@@ -409,7 +404,7 @@ export default {
     async getSubjects() {
       this.isLoading = true;
       await this.fetchCoursesSubjects({
-        curriculum_id: this.curriculum_id
+        curriculum_id: this.curriculum_id,
       });
       setTimeout(() => {
         this.isLoading = false;
@@ -420,8 +415,8 @@ export default {
       if (tags !== null) {
         tags = tags.includes(",") ? tags.split(",") : [].concat(tags);
         let sbjTag = null;
-        tags.forEach(value => {
-          sbjTag = this.subjects.forEach(sbj => {
+        tags.forEach((value) => {
+          sbjTag = this.subjects.forEach((sbj) => {
             if (sbj.code == value) {
               this.tags.prerequisite.push(sbj);
               return sbj;
@@ -464,7 +459,7 @@ export default {
           hasIcon: true,
           onConfirm: () => {
             this.remove(this.trashObject);
-          }
+          },
         });
       }
     },
@@ -474,7 +469,7 @@ export default {
     },
 
     mapSubjectCode() {
-      this.formData.prerequisite = this.tags.prerequisite.map(item => {
+      this.formData.prerequisite = this.tags.prerequisite.map((item) => {
         return item.code;
       });
       this.formData.prerequisite = this.formData.prerequisite.toString();
@@ -525,8 +520,10 @@ export default {
     },
 
     print() {
-      let routeData = this.$router.resolve({ name: "curriculum-subjects-print", 
-      params: {curriculum_id: this.curriculum_id} });
+      let routeData = this.$router.resolve({
+        name: "curriculum-subjects-print",
+        params: { curriculum_id: this.curriculum_id },
+      });
       window.open(routeData.href, "_blank");
     },
 
@@ -543,14 +540,14 @@ export default {
         lab: "",
         year_level: "",
         semester: "",
-        curriculum_id: ""
+        curriculum_id: "",
       };
 
       this.options.course.searchText = "";
       this.options.subject.searchText = "";
       this.options.academicYear.searchText = "";
       this.tags.prerequisite = [];
-    }
-  }
+    },
+  },
 };
 </script>

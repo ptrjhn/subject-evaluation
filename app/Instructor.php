@@ -30,8 +30,8 @@ class Instructor extends Model
         return $this->hasMany(InstructorSubject::class, 'instructor_id');
     }
 
-    public function account(): HasOne
+    public function account()
     {
-        return $this->hasOne(User::class, 'source_id');
+        return $this->belongsTo('App\User', 'id', 'instructor_id');
     }
 }

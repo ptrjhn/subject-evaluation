@@ -370,10 +370,12 @@ export default {
     if (this.$route.params.id !== undefined) {
       this.isNew = false;
       await this.fetchStudent(this.$route.params.id);
-      this.form.email = this.student.account.email;
-      Object.assign(this.form, this.student);
-      this.form.password = this.student.account.password;
 
+      Object.assign(this.form, this.student);
+      this.form.email = this.student.account.email;
+      this.form.user_id = this.student.account.id;
+      this.form.password = this.student.account.password;
+      console.log(this.form.user_id);
       this.getCurriculumsByCourse(this.student.course_id);
       this.options.course.searchText = this.student.course.description;
     }
@@ -387,7 +389,7 @@ export default {
       "fetchStudent",
     ]),
 
-    ...mapActions("users", ["createUser", "updateUser", "fetchUser"]),
+    ...mapActions("users", ["createUser", "updateUser"]),
 
     getCurriculumsByCourse(id) {
       this.form.course_id = id === null ? 0 : id;
@@ -411,11 +413,10 @@ export default {
       let response = null;
       this.form.birth_date = moment(this.bday).format("YYYY-MM-DD");
       if (this.isNew) {
-        response = await this.createStudent(this.form);
+        let response = await this.createStudent(this.form);
 
         if (response == undefined || response == null) {
-          // await this.account();
-
+          await this.saveAccount();
           this.showNotification("Successfully Saved.", "success");
         } else {
           this.errors = response.errors;
@@ -427,9 +428,10 @@ export default {
 
     async update(data) {
       let response = null;
-      response = await this.updateStudent(this.form);
+      response = await this.updateStudent(this.form).then(() => {
+        this.updateAccount();
+      });
       if (response == undefined || response == null) {
-        // await this.account(data);
         this.showNotification("Successfully updated", "success");
       } else {
         this.errors = response.errors;
@@ -445,21 +447,25 @@ export default {
     async saveAccount(data) {
       await this.createUser({
         user_type: "Student",
-        student_id: data,
+        student_id: data.id,
         name: `${this.form.first_name} ${this.form.last_name}`,
         email: this.form.email,
+        instructor_id: null,
         password: this.form.password,
       });
     },
 
     async updateAccount() {
-      await this.updateUser({
+      const id = this.form.user_id;
+      var payload = {
         user_type: "Student",
         student_id: this.form.id,
         name: `${this.form.first_name} ${this.form.last_name}`,
         email: this.form.email,
+        instructor_id: null,
         password: this.form.password,
-      });
+      };
+      await apiClient.put(`/users/${this.form.user_id}`, payload);
     },
     reset() {
       this.form = mapValues(this.form, (item) => {
